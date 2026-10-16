@@ -7,10 +7,9 @@ const start = () => requestAnimationFrame(() => document.documentElement.classLi
 if (bike && !bike.complete) bike.addEventListener('load', start, { once: true });
 else start();
 
-// ---- Problem: pinned horizontal scroll (desktop, motion allowed) ----
+// ---- Problem: sticky section, panels scroll sideways, then the page carries on ----
 window.addEventListener('DOMContentLoaded', () => {
   const section = document.querySelector('.problem');
-  const nav = document.querySelector('.nav');
   if (!section || !window.gsap || !window.ScrollTrigger) return;
   gsap.registerPlugin(ScrollTrigger);
 
@@ -21,14 +20,11 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const setActive = (i) => {
     panels.forEach((p, j) => p.classList.toggle('is-active', j === i));
-    panels[i].classList.add('is-seen');
     current.textContent = String(i + 1).padStart(2, '0');
   };
 
-  const mm = gsap.matchMedia();
-
-  mm.add('(min-width: 900px) and (prefers-reduced-motion: no-preference)', () => {
-    section.classList.add('is-horizontal', 'is-animated');
+  gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
+    section.classList.add('is-horizontal');
     const distance = () => track.scrollWidth - window.innerWidth;
 
     gsap.to(track, {
@@ -43,36 +39,13 @@ window.addEventListener('DOMContentLoaded', () => {
         invalidateOnRefresh: true,
         onUpdate: (self) => {
           meter.style.setProperty('--p', self.progress.toFixed(3));
-          const i = Math.min(panels.length - 1, Math.round(self.progress * (panels.length - 1)));
-          setActive(i);
+          setActive(Math.round(self.progress * (panels.length - 1)));
         },
       },
     });
     setActive(0);
 
-    return () => {
-      section.classList.remove('is-horizontal', 'is-animated');
-      panels.forEach((p) => p.classList.remove('is-active', 'is-seen'));
-    };
-  });
-
-  mm.add('(max-width: 899px) and (prefers-reduced-motion: no-preference)', () => {
-    section.classList.add('is-animated');
-    const triggers = panels.map((p) => ScrollTrigger.create({
-      trigger: p.querySelector('.viz'), start: 'top 85%', once: true,
-      onEnter: () => p.classList.add('is-seen'),
-    }));
-    return () => {
-      triggers.forEach((t) => t.kill());
-      section.classList.remove('is-animated');
-      panels.forEach((p) => p.classList.remove('is-seen'));
-    };
-  });
-
-  // Nav turns light while it sits over the dark section (created after the pin so it measures the pin spacing)
-  ScrollTrigger.create({
-    trigger: section, start: 'top 48px', end: 'bottom 48px',
-    toggleClass: { targets: nav, className: 'is-dark' },
+    return () => section.classList.remove('is-horizontal');
   });
 });
 
