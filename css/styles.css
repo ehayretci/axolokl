@@ -245,7 +245,7 @@ a { color: inherit; }
   gap: 6vw;
   width: max-content;
   padding: 0 var(--gutter) 2rem;
-  background: var(--paper); /* gives the multiply-blended graphics a backdrop inside this layer */
+  background: var(--paper);
   will-change: transform;
 }
 .panel {
@@ -266,13 +266,17 @@ a { color: inherit; }
 }
 .panel__body { margin: 1.4rem 0 0; max-width: 34ch; color: var(--steel); }
 .panel__source { margin: 1.6rem 0 0; font-size: 0.75rem; color: var(--steel); opacity: .8; }
+.panel__source a { text-underline-offset: 0.2em; text-decoration-color: var(--hairline); }
+.panel__source a:hover { color: var(--gill); text-decoration-color: currentColor; }
 
-/* Graphics sit straight on the page: no frame, white melts into the paper.
+/* Graphics sit straight on the page with no frame. Their white is pre-baked to the
+   paper colour (#F7F7F8) in the files, so no blend mode is needed and fades stay seamless.
    Every graphic is cropped with the same margin around its drawing and shown at
-   one shared height, so the drawings come out the same size and line up. */
+   one shared height, so the drawings come out the same size and line up.
+   --scale on a figure fine-tunes one graphic by eye. */
 .panel { --media-h: min(58vh, 530px, 36vw); }
 .panel__media { margin: 0; justify-self: center; }
-.panel__media img { height: var(--media-h); width: auto; max-width: none; mix-blend-mode: multiply; }
+.panel__media img { height: calc(var(--media-h) * var(--scale, 1)); width: auto; max-width: none; }
 /* this graphic has its own paper texture at the edges: fade it out so no square shows */
 .panel__media--textured img {
   -webkit-mask-image: radial-gradient(ellipse 58% 58% at 50% 50%, #000 70%, transparent 100%);
