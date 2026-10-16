@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Axolokl — Wheel locks only your key opens</title>
+  <meta name="description" content="London loses wheels in seconds. Axolokl is building axle locks with a unique key for every rider. Join the waitlist for 25% off at launch.">
+  <link rel="preload" href="assets/fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/styles.css">
+  <script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+
+  <header class="nav">
+    <a class="wordmark" href="#top" aria-label="Axolokl home">Axolokl</a>
+    <a class="btn btn--small" href="#waitlist">Join the waitlist</a>
+  </header>
+
+  <main id="top">
+
+    <!-- 1. HERO -->
+    <section class="hero" aria-labelledby="hero-title">
+      <h1 id="hero-title" class="hero__title">
+        <span class="hero__line hero__line--a">Your lock held.</span>
+        <span class="hero__line hero__line--b">Your wheels didn’t.</span>
+      </h1>
+
+      <figure class="hero__stage">
+        <img class="hero__bike" src="assets/img/hero-stolen-wheels.jpg" width="1024" height="765"
+             alt="A bicycle frame still locked with a D-lock, both of its wheels stolen.">
+        <!-- Ghost wheels: outlines where the stolen wheels used to be. Coordinates in image pixels. -->
+        <svg class="hero__ghosts" viewBox="0 0 1024 765" aria-hidden="true" focusable="false">
+          <circle class="ghost" cx="152" cy="652" r="262" pathLength="1"/>
+          <circle class="ghost ghost--rear" cx="912" cy="548" r="262" pathLength="1"/>
+        </svg>
+      </figure>
+
+      <p class="hero__sub">
+        In London, a quick release opens in seconds and one hex key fits almost every wheel bolt.
+        We’re building axle locks that only your key can open.
+      </p>
+
+      <a class="hero__cue" href="#problem" aria-label="Scroll to the problem">
+        <span></span>
+      </a>
+    </section>
+
+    <!-- 2. PROBLEM (next) -->
+    <section id="problem" class="placeholder-dark" aria-label="Coming next: the problem">
+      <p>Next section: the problem</p>
+    </section>
+
+  </main>
+
+  <script src="js/main.js" defer></script>
+</body>
+</html>
