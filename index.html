@@ -39,7 +39,7 @@
     <nav class="nav__links" aria-label="Main">
       <a class="nav__link" href="mailto:info@axolokl.co.uk">Contact</a>
       <a class="nav__link" href="https://www.instagram.com/axolokl/" target="_blank" rel="noopener">Instagram</a>
-      <a class="btn btn--small nav__cta" href="#waitlist">Join the waitlist <span class="nav__chip">−25%</span></a>
+      <a class="btn btn--small nav__cta" href="#waitlist" data-waitlist-open>Join the waitlist <span class="nav__chip">−25%</span></a>
     </nav>
   </header>
 
@@ -218,7 +218,113 @@
       </div>
     </section>
 
+
+    <!-- 3. LAUNCH — full-screen sheet: work in progress, countdown, waitlist -->
+    <section id="waitlist" class="launch" aria-labelledby="launch-title">
+      <div class="launch__bar">
+        <span class="launch__label">Launch</span>
+        <span class="launch__date">1 December 2026</span>
+      </div>
+
+      <div class="launch__main">
+        <div class="launch__story">
+          <h2 id="launch-title" class="launch__title">
+            <!-- Looping icon: a hex key turning a bolt, a quarter-step at a time -->
+            <svg class="wip" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+              <circle class="wip__head" cx="32" cy="32" r="22"/>
+              <g class="wip__turn">
+                <path class="wip__socket" d="M32 22.5 L40.2 27.25 L40.2 36.75 L32 41.5 L23.8 36.75 L23.8 27.25 Z"/>
+                <path class="wip__key" d="M32 32 L32 4 L50 4"/>
+              </g>
+            </svg>
+            <span>Work in progress.</span>
+          </h2>
+          <p class="launch__lede">We’re making the world’s most secure bike lock. Coming out on 1 December.</p>
+
+          <div class="countdown" role="timer" aria-live="off" aria-label="Time until launch on 1 December 2026">
+            <div class="countdown__unit"><span class="countdown__num" data-unit="days">--</span><span class="countdown__label">days</span></div>
+            <div class="countdown__unit"><span class="countdown__num" data-unit="hours">--</span><span class="countdown__label">hours</span></div>
+            <div class="countdown__unit"><span class="countdown__num" data-unit="minutes">--</span><span class="countdown__label">minutes</span></div>
+            <div class="countdown__unit"><span class="countdown__num" data-unit="seconds">--</span><span class="countdown__label">seconds</span></div>
+          </div>
+        </div>
+
+        <div class="launch__cta">
+          <button class="btn btn--big join" type="button" data-waitlist-open>
+            <span>Join the waitlist</span>
+            <span class="join__chip" aria-hidden="true"><span>−25%</span></span>
+          </button>
+          <p class="launch__note">Join our waitlist to get a discount code when our product comes out. No commitment, no weekly emails. We’ll send you only one email, when our product comes out.</p>
+        </div>
+      </div>
+
+      <footer class="launch__foot">
+        <a class="launch__brand" href="#top" aria-label="Axolokl, back to top">
+          <svg class="launch__mark" aria-hidden="true" focusable="false" viewBox="0 0 110 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M23 9.22266C35.7025 9.22266 45.9999 19.5202 46 32.2227C46 44.9252 35.7025 55.2227 23 55.2227C10.2975 55.2227 0 44.9252 0 32.2227C6.5581e-05 19.5202 10.2975 9.22266 23 9.22266ZM13.5 21C10.4624 21 8 23.9101 8 27.5C8 31.0899 10.4624 34 13.5 34C16.5376 34 19 31.0899 19 27.5C19 23.9101 16.5376 21 13.5 21Z" fill="currentColor"/>
+          <path d="M45.6443 1.8439C46.1264 2.11445 46.2784 2.73856 45.9752 3.20179L39.2586 13.4622C38.6574 14.3806 39.8234 15.4239 40.664 14.7197L48.3284 8.29864C50.3009 6.6461 53.065 6.33208 55.3558 7.50027L58.219 8.96042C59.1479 9.43408 59.2746 10.7144 58.4567 11.3621L28.4755 35.1071C24.2426 38.3069 18.0421 32.228 20.5986 27.5874L34.5989 3.44287C36.4924 0.17733 40.645 -0.962145 43.9309 0.882165L45.6443 1.8439Z" fill="currentColor"/>
+          <path d="M82.1157 23.2228H40V40.2228H109.307C109.69 40.2228 110 39.9183 110 39.5428V35.6343C110 35.0032 109.619 34.4321 109.029 34.1799L84.6087 23.7329C83.8223 23.3964 82.9736 23.2228 82.1157 23.2228Z" fill="currentColor"/>
+          <path d="M52 38.9319C52 38.5402 52.3022 38.2228 52.675 38.2228H60.325C60.6978 38.2228 61 38.5402 61 38.9319V50.5137C61 50.9053 60.6978 51.2228 60.325 51.2228H52.675C52.3022 51.2228 52 50.9053 52 50.5137V38.9319Z" fill="currentColor"/>
+          <path d="M84 39.9728C84 39.5586 84.3022 39.2228 84.675 39.2228H92.325C92.6978 39.2228 93 39.5586 93 39.9728V48.4728C93 48.887 92.6978 49.2228 92.325 49.2228H84.675C84.3022 49.2228 84 48.887 84 48.4728V39.9728Z" fill="currentColor"/>
+          </svg>
+          <svg class="launch__word" aria-hidden="true" focusable="false" viewBox="0 0 193 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M0 30.7066C-3.30485e-08 28.4888 0.436837 26.2926 1.28557 24.2436C2.1343 22.1946 3.37831 20.3328 4.94656 18.7646C6.51482 17.1963 8.37661 15.9523 10.4256 15.1036C12.4747 14.2548 14.6708 13.818 16.8886 13.818C19.1065 13.818 21.3026 14.2548 23.3516 15.1036C25.4007 15.9523 27.2624 17.1963 28.8307 18.7646C30.3989 20.3328 31.643 22.1946 32.4917 24.2436C33.3404 26.2926 33.7773 28.4888 33.7773 30.7066C33.7773 32.9245 33.3404 35.1206 32.4917 37.1696C31.643 39.2186 30.3989 41.0804 28.8307 42.6487C27.2624 44.2169 25.4007 45.4609 23.3516 46.3097C21.3026 47.1584 19.1065 47.5953 16.8886 47.5953C14.6708 47.5953 12.4747 47.1584 10.4256 46.3097C8.37661 45.4609 6.51482 44.2169 4.94656 42.6487C3.37831 41.0804 2.1343 39.2186 1.28557 37.1696C0.436837 35.1206 -3.30485e-08 32.9245 0 30.7066ZM7.08961 30.7066C7.08961 28.1078 8.122 25.6153 9.95968 23.7777C11.7973 21.94 14.2898 20.9076 16.8886 20.9076C19.4875 20.9076 21.9799 21.94 23.8176 23.7777C25.6553 25.6153 26.6876 28.1078 26.6876 30.7066C26.6876 33.3055 25.6553 35.7979 23.8176 37.6356C21.9799 39.4732 19.4875 40.5056 16.8886 40.5056C14.2898 40.5056 11.7973 39.4732 9.95968 37.6356C8.122 35.7979 7.08961 33.3055 7.08961 30.7066Z" fill="currentColor"/>
+          <path d="M27.0037 46.9631H33.7772V14.4502H27.0037V46.9631Z" fill="currentColor"/>
+          <path d="M37.0285 46.9631H45.2471L65.0257 14.4502H56.8072L37.0285 46.9631Z" fill="currentColor"/>
+          <path d="M59.9516 46.9631H68.1701L48.3915 14.4502H40.1729L59.9516 46.9631Z" fill="currentColor"/>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M68.277 30.7066C68.277 26.2275 70.0563 21.9318 73.2236 18.7646C76.3908 15.5973 80.6865 13.818 85.1656 13.818C89.6448 13.818 93.9405 15.5973 97.1077 18.7646C100.275 21.9318 102.054 26.2275 102.054 30.7066C102.054 35.1858 100.275 39.4815 97.1077 42.6487C93.9405 45.8159 89.6448 47.5953 85.1656 47.5953C80.6865 47.5953 76.3908 45.8159 73.2236 42.6487C70.0563 39.4815 68.277 35.1858 68.277 30.7066ZM75.3666 30.7066C75.3666 28.1078 76.399 25.6153 78.2367 23.7777C80.0744 21.94 82.5668 20.9076 85.1656 20.9076C87.7645 20.9076 90.2569 21.94 92.0946 23.7777C93.9323 25.6153 94.9647 28.1078 94.9647 30.7066C94.9647 33.3055 93.9323 35.7979 92.0946 37.6356C90.2569 39.4732 87.7645 40.5056 85.1656 40.5056C82.5668 40.5056 80.0744 39.4732 78.2367 37.6356C76.399 35.7979 75.3666 33.3055 75.3666 30.7066Z" fill="currentColor"/>
+          <path d="M106.615 46.963H113.389V0H106.615V46.963Z" fill="currentColor"/>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M117.949 30.7066C117.949 26.2214 119.731 21.92 122.903 18.7485C126.074 15.5771 130.376 13.7953 134.861 13.7953C139.346 13.7953 143.647 15.5771 146.819 18.7485C149.99 21.92 151.772 26.2214 151.772 30.7066C151.772 35.1917 149.99 39.4931 146.819 42.6646C143.647 45.8361 139.346 47.6178 134.861 47.6178C130.376 47.6178 126.074 45.8361 122.903 42.6646C119.731 39.4931 117.949 35.1917 117.949 30.7066ZM125.039 30.7066C125.039 28.1077 126.071 25.6153 127.909 23.7776C129.747 21.9399 132.239 20.9075 134.838 20.9075C137.437 20.9075 139.929 21.9399 141.767 23.7776C143.605 25.6153 144.637 28.1077 144.637 30.7066C144.637 33.3054 143.605 35.7978 141.767 37.6355C139.929 39.4732 137.437 40.5056 134.838 40.5056C132.239 40.5056 129.747 39.4732 127.909 37.6355C126.071 35.7978 125.039 33.3054 125.039 30.7066Z" fill="currentColor"/>
+          <path d="M156.333 46.963H163.106V0H156.333V46.963Z" fill="currentColor"/>
+          <path d="M156.92 31.6098L161.797 36.3061L182.84 14.4502H173.402L156.92 31.6098Z" fill="currentColor"/>
+          <path d="M161.345 31.0227L157.371 36.8479L171.957 46.963H184.285L161.345 31.0227Z" fill="currentColor"/>
+          <path d="M186.227 46.963H193V0H186.227V46.963Z" fill="currentColor"/>
+          </svg>
+        </a>
+        <div class="launch__meta">
+          <a href="mailto:info@axolokl.co.uk">info@axolokl.co.uk</a>
+          <a href="https://www.instagram.com/axolokl/" target="_blank" rel="noopener">Instagram</a>
+          <span>© 2026 Axolokl</span>
+        </div>
+      </footer>
+    </section>
   </main>
+
+  <!-- Waitlist pop-up. Netlify Forms stores submissions; nothing is emailed until launch. -->
+  <dialog class="modal" id="waitlist-modal" aria-labelledby="modal-title">
+    <div class="modal__bar">
+      <span>The waitlist</span>
+      <span class="modal__date">Launching 1 December</span>
+      <button class="modal__close" type="button" aria-label="Close" data-waitlist-close>
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 5 L19 19 M19 5 L5 19"/></svg>
+      </button>
+    </div>
+
+    <form class="modal__form" name="waitlist" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+      <input type="hidden" name="form-name" value="waitlist">
+      <p class="visually-hidden"><label>Leave this empty <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+
+      <h2 id="modal-title" class="modal__title">Join the waitlist.</h2>
+      <p class="modal__text">You’ll be eligible for <strong>25% off</strong> the first products we release. We’ll email you once, when Axolokl launches. That’s it.</p>
+
+      <label class="visually-hidden" for="waitlist-email">Email address</label>
+      <input class="modal__input" id="waitlist-email" type="email" name="email" placeholder="you@email.com" autocomplete="email" required>
+
+      <label class="modal__consent">
+        <input type="checkbox" name="consent" value="yes" required>
+        <span>I agree to Axolokl storing my email to send me one launch email with my discount code. You can ask us to delete it anytime at info@axolokl.co.uk.</span>
+      </label>
+
+      <button class="btn btn--big modal__submit" type="submit">Join the waitlist</button>
+      <p class="modal__error" role="alert" hidden>Something went wrong. Please try again in a moment.</p>
+    </form>
+
+    <div class="modal__done" hidden>
+      <h2 class="modal__title" tabindex="-1">You’re on the list.</h2>
+      <p class="modal__text">We’ll email <strong class="modal__email"></strong> once, on 1 December, with your 25% code.</p>
+      <button class="btn btn--big" type="button" data-waitlist-close>Done</button>
+    </div>
+  </dialog>
 
   <script src="js/vendor/gsap.min.js" defer></script>
   <script src="js/vendor/ScrollTrigger.min.js" defer></script>
