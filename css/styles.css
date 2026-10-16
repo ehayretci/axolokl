@@ -298,7 +298,7 @@ a { color: inherit; }
   position: relative;
   display: grid;
   gap: 5.5rem;
-  padding: 5.5rem var(--gutter) 1.75rem;
+  padding: 6.25rem var(--gutter) 2.25rem;
   background: var(--graphite);
   color: var(--alu);
   border-radius: 2rem 2rem 0 0;
@@ -314,14 +314,14 @@ a { color: inherit; }
 .launch__title { grid-column: 1; grid-row: 1; }
 .launch__lede  { grid-column: 1; grid-row: 2; }
 .lock          { grid-column: 1; grid-row: 3; margin-top: 3.75rem; }
-.join          { grid-column: 2; grid-row: 1 / 3; justify-self: end; align-self: end; }
+.join          { grid-column: 2; grid-row: 1 / 3; justify-self: end; align-self: end; margin-bottom: -1.75rem; /* sits closer to the note below */ }
 .launch__note  { grid-column: 2; grid-row: 3; align-self: start; }
 .launch__title {
   display: flex; align-items: center; gap: 0.3em;
   margin: 0;
   font-family: var(--font-display);
   font-weight: 800; font-stretch: 112%;
-  font-size: clamp(2.2rem, 1rem + 2.6vw, 3.4rem);
+  font-size: clamp(2.3rem, 1.05rem + 2.73vw, 3.57rem); /* icon is em-sized, so it grows with the title */
   line-height: 0.95;
   letter-spacing: -0.035em;
   white-space: nowrap;
