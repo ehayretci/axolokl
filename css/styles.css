@@ -59,17 +59,22 @@ a { color: inherit; }
 
 /* ============ Nav (not sticky) ============ */
 .nav {
-  position: absolute; inset: 0 0 auto 0; z-index: 50;
+  position: absolute; z-index: 50;
+  top: 1rem; left: var(--gutter); right: var(--gutter);
   display: flex; align-items: center; justify-content: space-between;
-  padding: 1.4rem var(--gutter);
+  padding: 0.65rem 0.65rem 0.65rem 1.25rem;
+  background: #fff;
+  border: 1px solid rgb(28 31 35 / .08);
+  border-radius: 999px;
+  box-shadow: 0 1px 2px rgb(28 31 35 / .04), 0 12px 32px -12px rgb(28 31 35 / .14);
 }
 .logo {
   display: inline-flex; align-items: flex-end; gap: 0.7rem;
   color: var(--graphite);
   text-decoration: none;
 }
-.logo__mark { height: 2rem; width: auto; }
-.logo__word { height: 1.45rem; width: auto; margin-bottom: 0.1rem; }
+.logo__mark { height: 1.45rem; width: auto; }
+.logo__word { height: 1.05rem; width: auto; margin-bottom: 0.06rem; }
 
 .nav__links { display: flex; align-items: center; gap: 2rem; }
 .nav__link {
@@ -128,7 +133,7 @@ a { color: inherit; }
   display: flex; flex-direction: column; justify-content: space-between;
   font-weight: 800;
   font-stretch: 112%;
-  font-size: var(--step-4);
+  font-size: clamp(2.4rem, 1.2rem + 5vw, 6.6rem); /* a touch smaller than --step-4 for more white space */
   line-height: 0.92;
   letter-spacing: -0.035em;
   pointer-events: none;
@@ -138,43 +143,38 @@ a { color: inherit; }
 .hero__line--b { align-self: flex-end; text-align: right; padding-bottom: 1.5rem; }
 
 .hero__stage {
-  grid-area: 2 / 1 / 3 / 2;
+  grid-area: 1 / 1 / 4 / 2;
   position: relative;
   margin: 0 auto;
-  width: min(100%, 860px, 86svh);
+  width: min(100%, 740px, 72svh);
   align-self: start;
-  margin-top: -1.5rem;
+  margin-top: 3rem; /* bike sits between the two lines, clear of "Your wheels didn't." */
 }
 .hero__bike {
+  position: relative; z-index: 1; /* frame sits on top of the sketched wheels */
   width: 100%;
-  /* soft-fade the photo edges so its backdrop melts into the page */
-  -webkit-mask-image: radial-gradient(ellipse 66% 64% at 50% 52%, #000 62%, transparent 100%);
-          mask-image: radial-gradient(ellipse 66% 64% at 50% 52%, #000 62%, transparent 100%);
+  /* background is pure white in the file, so multiply melts it into the page and lets the wheels show through */
+  mix-blend-mode: multiply;
 }
 .hero__ghosts {
-  position: absolute; inset: 0;
+  position: absolute; inset: 0; z-index: 0;
   width: 100%; height: 100%;
   overflow: visible;
   pointer-events: none;
 }
-.ghost {
+/* Sketch lines of the ghost wheels. Widths are in image units (the stage shows the
+   1024px-wide image at ~720px). No non-scaling-stroke: it breaks pathLength trace-ins in Chrome. */
+.sk {
   fill: none;
   stroke: var(--gill);
-  stroke-width: 2.5;
-  vector-effect: non-scaling-stroke;
-  stroke-dasharray: 0.012 0.008;
-  opacity: .9;
+  stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
 }
-
-.hero__sub {
-  grid-area: 1 / 1 / 2 / 2;
-  justify-self: end; align-self: start;
-  max-width: 30ch;
-  margin: 0.6rem 0 0;
-  font-size: var(--step-0);
-  color: var(--steel);
-  z-index: 3;
-}
+.sk--tyre  { stroke-width: 3.1; }
+.sk--fine  { stroke-width: 1.3; }
+.sk--spoke { stroke-width: 1.15; opacity: .85; }
+.sk--hatch { stroke-width: 1; }
+.sk-fade   { opacity: var(--o, 1); }
 
 .hero__cue {
   position: absolute; left: 50%; bottom: 1.25rem;
@@ -191,21 +191,16 @@ a { color: inherit; }
 }
 @keyframes cue { 0% { translate: 0 -100%; } 60%, 100% { translate: 0 100%; } }
 
-/* One orchestrated load moment: the ghost wheels trace in, then the second line lands */
-.js .ghost { stroke-dashoffset: 1; stroke-dasharray: 1; }
-.js.is-loaded .ghost {
-  animation: trace 1.6s var(--ease-out) forwards .35s;
-}
-.js.is-loaded .ghost--rear { animation-delay: .6s; }
-@keyframes trace {
-  0%   { stroke-dasharray: 1; stroke-dashoffset: 1; }
-  80%  { stroke-dasharray: 1; stroke-dashoffset: 0; }
-  100% { stroke-dasharray: 0.012 0.008; stroke-dashoffset: 0; }
-}
+/* One orchestrated load moment: the ghost wheels sketch themselves in, then the second line lands */
+.js .sk-trace { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.js.is-loaded .sk-trace { animation: sketch var(--t, 1.2s) var(--ease-out) var(--d, 0s) forwards; }
+@keyframes sketch { to { stroke-dashoffset: 0; } }
+.js .sk-fade { opacity: 0; }
+.js.is-loaded .sk-fade { opacity: var(--o, 1); transition: opacity 1.8s ease var(--d, 0s); }
 .js .hero__line--b { opacity: 0; translate: 0 .15em; }
 .js.is-loaded .hero__line--b {
-  transition: opacity .6s ease, translate .8s var(--ease-out);
-  transition-delay: 1.5s;
+  transition: opacity 1.2s ease, translate 1.6s var(--ease-out);
+  transition-delay: 3.8s;
   opacity: 1; translate: 0 0;
 }
 
@@ -306,12 +301,12 @@ a { color: inherit; }
   .hero__line--a { grid-row: 1; }
   .hero__stage { grid-row: 2; margin: 1rem -1rem 3.5rem; width: calc(100% + 2rem); }
   .hero__line--b { grid-row: 3; padding-bottom: 1.5rem; }
-  .hero__sub { grid-row: 4; justify-self: start; margin-top: 0; }
   .hero__cue { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .js .ghost, .js.is-loaded .ghost { animation: none; stroke-dasharray: 0.012 0.008; stroke-dashoffset: 0; }
+  .js .sk-trace, .js.is-loaded .sk-trace { animation: none; stroke-dasharray: none; stroke-dashoffset: 0; }
+  .js .sk-fade { opacity: var(--o, 1); transition: none; }
   .js .hero__line--b { opacity: 1; translate: none; transition: none; }
   .hero__cue span { animation: none; translate: 0 0; }
 }
