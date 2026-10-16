@@ -2,36 +2,40 @@
 
 ## What this is
 Axolokl is a master's-module company (Imperial, Design Engineering) designing custom axle locks for bike wheels, against wheel theft in London. Standard quick releases and hex bolts open with one common tool; Axolokl's software generates a unique lock + key pair for every customer, so no universal tool works. Name is a nod to the axolotl.
-The product isn't available yet. This site pitches the problem, teases the product, and collects waitlist emails (25% off at launch). Countdown target: 1 Dec 2026, 00:00 UK time.
+The product isn't available yet. This site pitches the problem and collects waitlist emails (25% off at launch). Launch / countdown target: 1 Dec 2026, 00:00 UK time.
 
 ## Working style (owner: Erim)
 - Build one section at a time, then stop and show it. Wait for approval before the next section.
 - Concise replies, plain language. No information dumps, no over-execution.
-- After visual changes, check the result in a browser (desktop ~1440px and mobile ~390px) before reporting.
+- After visual changes, check the result in a browser before reporting. **Desktop only for now (~1440px); don't design for mobile yet.**
+- Erim often sends annotated screenshots of the Browser pane and asks for small tweaks; commit only when asked, with the message Erim gives.
 
 ## Stack & decisions
 - Plain static HTML/CSS/JS, no build step, no framework. Netlify will serve the folder as-is.
-- Run locally: `python3 -m http.server 8000` in this folder → http://localhost:8000
-- Fonts self-hosted: Archivo variable (wght 100–900, wdth 62–125%) in assets/fonts/archivo-var.woff2. No Google Fonts calls (UK GDPR).
-- Planned libs (add when needed, via CDN or vendored): GSAP + ScrollTrigger (pinned horizontal scroll), MapLibre GL (London map, free tiles e.g. OpenFreeMap, no API key).
-- Waitlist: Netlify Forms (data-netlify="true", honeypot field, UK GDPR consent checkbox). Stores emails in the Netlify dashboard; export CSV at launch. No emails are sent until launch. Locally the form can't submit, so mock the success state.
-- Deploy: LATER. Build locally for now; the domain is in progress. Then GitHub (github.com/ehayretci) → Netlify (team erimhayretci) on the custom domain.
-- Git: repo initialised, nothing committed yet.
+- Run locally: `python3 dev-server.py` → http://localhost:8000 (like `http.server`, but sends `Cache-Control: no-store` so browsers never show stale CSS/JS). `.claude/launch.json` starts it for the browser pane. CSS/JS links also carry `?v=N`; bump it if a browser shows old styles.
+- Fonts self-hosted, no Google Fonts calls (UK GDPR): Archivo variable (headlines) in assets/fonts/archivo-var.woff2; Urbanist variable (body) in assets/fonts/urbanist-var.woff2. Urbanist was picked to match the logo: geometric, circular bowls, single-storey a.
+- GSAP 3.12.7 + ScrollTrigger vendored in js/vendor/ (no CDN). Don't use CSS `scroll-behavior: smooth` — it breaks ScrollTrigger measurements; anchor smooth-scroll is done in js/main.js.
+- Waitlist: Netlify Forms (`name="waitlist"`, data-netlify, honeypot `bot-field`). The consent checkbox was removed at Erim's request; the pop-up copy states the purpose. Add a short privacy notice before going live. Locally the submit is mocked (success state shown); on Netlify it POSTs via fetch. Emails land in the Netlify dashboard; export CSV at launch. Nothing is emailed until launch.
+- Contact: info@axolokl.co.uk. Instagram: instagram.com/axolokl.
+- Deploy: LATER. Domain in progress. Then GitHub (github.com/ehayretci) → Netlify (team erimhayretci) on the custom domain.
+- Git: branch `master`, local only (no remote yet). Commits are made section by section.
 
-## Design system (in css/styles.css :root)
+## Design system (css/styles.css :root)
 - Feel: security, precision, premium hardware. Not gimmicky or cute. Axolotl colours only as accents.
-- --paper #F7F7F8 (page bg; matches the hero photo's studio white), --alu #E6E8EB, --graphite #1C1F23 (text / dark sections), --steel #6E757E (secondary text), --hairline #C9CDD2, --axo #F4A9C0 (axolotl pink, on dark only), --gill #B8355E (pink that passes contrast on light; CTAs hover, focus ring, ghost wheels).
-- Type: Archivo only. Headlines weight 800, font-stretch ~112%, tight tracking (-0.035em), line-height 0.92. Wordmark: 800 weight, 125% stretch.
-- Placeholder wordmark "Axolokl" (text) until a logo exists. Pill buttons in graphite.
-- Avoid: ALL-CAPS eyebrow labels, accenting single words in headlines, card grids with identical shadows, scattered fade-up animations, arrows appended to buttons. Spend boldness in one place per section.
-- Respect prefers-reduced-motion everywhere; visible focus states; responsive to mobile.
+- --paper #F7F7F8 (page bg), --alu #E6E8EB, --graphite #1C1F23 (text / dark sections), --steel #6E757E (secondary text), --hairline #C9CDD2, --axo #F4A9C0 (axolotl pink, on dark), --gill #B8355E (deep pink: hover state of every button, focus ring, ghost wheels, labels on light).
+- Type: headlines Archivo 800, font-stretch ~112%, tracking -0.035em, tight line-height. Body Urbanist 450.
+- Logo: assets/logo/axolokl-mark.svg (axolotl mark, updated 16 Oct 2026) + axolokl-wordmark.svg; favicon.svg is the mark in graphite. Both are inlined in index.html with fill="currentColor" (header + launch footer) — if the logo changes, replace the files AND the two inline copies.
+- Buttons: pills; hover is always --gill with light text. Avoid ALL-CAPS eyebrow labels, accenting single words in headlines, card grids with identical shadows, scattered fade-up animations. Spend boldness in one place per section.
+- Images on the light page have their white baked to the paper colour (or pure white + `mix-blend-mode: multiply` for the hero photo) so no boxes show. Don't rely on multiply inside layers that fade/transform — it flashes.
+- Respect prefers-reduced-motion everywhere; visible focus states.
 
-## Page sections & status
-1. Hero — DONE. Headline split: "Your lock held." (top-left) / "Your wheels didn't." (bottom-right) around the photo assets/img/hero-stolen-wheels.jpg (1024×765, frame with both wheels stolen, D-lock still on). Signature element: pink dashed SVG "ghost wheels" where the stolen wheels were (circles at image coords cx152/cy652 and cx912/cy548, r262), traced in on load, then line 2 fades in. Sub copy top-right. Photo edges soft-masked; a background-removed photo would remove the faint vignette edge.
-2. Problem — NEXT. Pinned horizontal scroll, 4–5 panels: London bike-theft numbers, wheel/component theft, quick release opens in seconds, standard bolts = one tool opens every bike, cost of replacing. Use clearly marked placeholder stats (UK/London focus) until real sourced numbers are given. Page turns dark (graphite) here.
-3. Teaser — "we're building something": unique lock + key generated per customer. No product shots yet.
-4. London map — Zone 1 only, dark monochrome style. Pins from a data file (e.g. data/spots.json); hover (tap on mobile) shows our photo of a bike with stolen wheels + location + date. Use placeholder photos for now; real ones will go in assets/map-photos (may have GPS EXIF to auto-place pins).
-5. CTA — "Make sure you're not next." Countdown to 1 Dec 2026 00:00 Europe/London, email field, "One email. When we launch. That's it.", 25% off for waitlist.
-6. Footer — skip for now.
+## Page (index.html), top to bottom — all built
+- Header — non-sticky floating white pill bar: mark + wordmark left; Contact (mailto), Instagram, and "Join the waitlist −25%" (opens the pop-up). Text links get a dashed gill underline on hover.
+- 1. Hero — "Your lock held." (top-left) / "Your wheels didn't." (bottom-right), no sub text. Photo assets/img/hero-bike.jpg (1024×765, background pushed to pure white, multiplied onto the page). Ghost wheels: hand-drawn sketch SVG (tyre, tread, hatching, rim, 32 spokes, hub) in gill, drawn BEHIND the frame, centred at image coords (152,652) and (912,548), r262; each stroke traces in on load (slow, ~4.5s), then line 2 fades in at 3.8s. Rear wheel has an SVG mask (circle at 911,562 r44) so the photo's real cassette shows through. The SVG is generated markup (inline, ~80 paths) — edit by hand or regenerate.
+- 2. Problem space — light section, pinned; 4 panels scroll sideways (GSAP), progress counter top-right, inactive panels fade. Each panel: Archivo headline + body + linked source, graphic on the right. Graphics (assets/img/problem-*.jpg) are cropped with equal margins around the drawing and shown at one shared height, fine-tuned with `--scale` per figure; cable-lock has its paper texture edge-faded. Stats/sources: #1 stolen part (thebestbikelock.com), 17%/73% (LCC Cycle Theft Survey 2025), £240–370 rear wheel (Brick Lane Bikes workshop); panel 4 "One tool opens almost every bike" has no source.
+- 3. Launch — graphite sheet with rounded top corners (not full-screen). "Work in progress." with a looping hex-key-turning-a-bolt icon; lede with **1 December** in pink; countdown built as a combination lock (metal wheels per digit that roll, pink index marks; built in main.js, target Date.UTC(2026,11,1)). Right column: pink "Join the waitlist →" button (arrow swaps for −25% chip on hover), note right-aligned and top-aligned with the counter. Footer row: small mark + wordmark, email, Instagram, © 2026.
+- Waitlist pop-up — `<dialog>`, graphite, ~27rem wide: "Launching 1 December" + close, "Join the waitlist.", "You'll be eligible for 25% off our first products. We'll email the code when Axolokl launches.", email field, pink submit (gill hover). Success: "You're on the list. We'll email {email} once we launch."
 
-See PLAN.md for the full pipeline (polish, OG/meta, deploy, QA).
+## Not built / open
+- Teaser and London map sections from the original plan were not built (launch section took over the CTA + footer role). Ask before adding them.
+- Mobile layout, privacy notice, OG/meta + share image, deploy, QA. See PLAN.md for the pipeline.
