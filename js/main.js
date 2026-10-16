@@ -61,24 +61,47 @@ document.addEventListener('click', (e) => {
   history.replaceState(null, '', link.getAttribute('href'));
 });
 
-// ---- Launch countdown: 1 Dec 2026, 00:00 UK time (GMT in December, so 00:00 UTC) ----
+// ---- Launch countdown as a combination lock: 1 Dec 2026, 00:00 UK time (GMT, so 00:00 UTC) ----
 (() => {
+  const lock = document.querySelector('.lock');
+  if (!lock) return;
   const launch = Date.UTC(2026, 11, 1, 0, 0, 0);
-  const els = {};
-  document.querySelectorAll('.countdown__num').forEach((el) => { els[el.dataset.unit] = el; });
-  if (!els.days) return;
-  const pad = (n) => String(n).padStart(2, '0');
+  const srText = lock.querySelector('[data-countdown-text]');
+
+  // Two wheels per unit, each a strip of 0-9 that rolls to the current digit
+  const wheels = {};
+  lock.querySelectorAll('.lock__group').forEach((group) => {
+    const holder = group.querySelector('.lock__wheels');
+    wheels[group.dataset.unit] = [0, 1].map(() => {
+      const wheel = document.createElement('span');
+      wheel.className = 'wheel';
+      wheel.setAttribute('aria-hidden', 'true');
+      const strip = document.createElement('span');
+      strip.className = 'wheel__strip';
+      strip.innerHTML = '0123456789'.split('').map((n) => `<span>${n}</span>`).join('');
+      wheel.appendChild(strip);
+      holder.appendChild(wheel);
+      return strip;
+    });
+  });
+
+  const set = (unit, value) => {
+    const digits = String(value).padStart(2, '0').slice(-2);
+    wheels[unit].forEach((strip, i) => strip.style.setProperty('--d', digits[i]));
+  };
+
+  let lastMinute = -1;
   const tick = () => {
-    const left = Math.max(0, launch - Date.now());
-    const sec = Math.floor(left / 1000);
-    els.days.textContent = pad(Math.floor(sec / 86400));
-    els.hours.textContent = pad(Math.floor(sec / 3600) % 24);
-    els.minutes.textContent = pad(Math.floor(sec / 60) % 60);
-    els.seconds.textContent = pad(sec % 60);
-    if (left === 0) clearInterval(timer);
+    const sec = Math.floor(Math.max(0, launch - Date.now()) / 1000);
+    const d = Math.floor(sec / 86400), h = Math.floor(sec / 3600) % 24, m = Math.floor(sec / 60) % 60;
+    set('days', d); set('hours', h); set('minutes', m); set('seconds', sec % 60);
+    // Screen readers get a plain sentence, updated once a minute rather than every second
+    if (m !== lastMinute) { lastMinute = m; srText.textContent = `${d} days, ${h} hours and ${m} minutes until launch.`; }
+    if (sec === 0) clearInterval(timer);
   };
   const timer = setInterval(tick, 1000);
-  tick();
+  // First set after a frame, so the wheels visibly spin from 00 into place
+  requestAnimationFrame(() => requestAnimationFrame(tick));
 })();
 
 // ---- Waitlist pop-up (Netlify Forms) ----

@@ -8,7 +8,7 @@
   <link rel="icon" href="assets/logo/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/urbanist-var.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles.css?v=5">
   <script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
@@ -219,13 +219,8 @@
     </section>
 
 
-    <!-- 3. LAUNCH — full-screen sheet: work in progress, countdown, waitlist -->
+    <!-- 3. LAUNCH — dark sheet: work in progress, lock-dial countdown, waitlist -->
     <section id="waitlist" class="launch" aria-labelledby="launch-title">
-      <div class="launch__bar">
-        <span class="launch__label">Launch</span>
-        <span class="launch__date">1 December 2026</span>
-      </div>
-
       <div class="launch__main">
         <div class="launch__story">
           <h2 id="launch-title" class="launch__title">
@@ -239,22 +234,38 @@
             </svg>
             <span>Work in progress.</span>
           </h2>
-          <p class="launch__lede">We’re making the world’s most secure bike lock. Coming out on 1 December.</p>
+          <p class="launch__lede">We’re making the world’s most secure bike lock. Coming out on <strong>1 December</strong>.</p>
 
-          <div class="countdown" role="timer" aria-live="off" aria-label="Time until launch on 1 December 2026">
-            <div class="countdown__unit"><span class="countdown__num" data-unit="days">--</span><span class="countdown__label">days</span></div>
-            <div class="countdown__unit"><span class="countdown__num" data-unit="hours">--</span><span class="countdown__label">hours</span></div>
-            <div class="countdown__unit"><span class="countdown__num" data-unit="minutes">--</span><span class="countdown__label">minutes</span></div>
-            <div class="countdown__unit"><span class="countdown__num" data-unit="seconds">--</span><span class="countdown__label">seconds</span></div>
+          <!-- Countdown as a combination lock: each digit is a rotating wheel (built in main.js) -->
+          <div class="lock" role="timer" aria-label="Time until launch on 1 December 2026">
+            <div class="lock__group" data-unit="days">
+              <div class="lock__wheels"></div>
+              <span class="lock__label">days</span>
+            </div>
+            <div class="lock__group" data-unit="hours">
+              <div class="lock__wheels"></div>
+              <span class="lock__label">hours</span>
+            </div>
+            <div class="lock__group" data-unit="minutes">
+              <div class="lock__wheels"></div>
+              <span class="lock__label">minutes</span>
+            </div>
+            <div class="lock__group" data-unit="seconds">
+              <div class="lock__wheels"></div>
+              <span class="lock__label">seconds</span>
+            </div>
+            <span class="visually-hidden" data-countdown-text></span>
           </div>
         </div>
 
         <div class="launch__cta">
-          <button class="btn btn--big join" type="button" data-waitlist-open>
+          <button class="join" type="button" data-waitlist-open>
             <span>Join the waitlist</span>
-            <span class="join__chip" aria-hidden="true"><span>−25%</span></span>
+            <!-- arrow by default; on hover it folds away and the discount slides in -->
+            <span class="join__swap join__arrow" aria-hidden="true"><span><svg viewBox="0 0 20 20" focusable="false"><path d="M4 10 H15 M10.5 5.5 L15 10 L10.5 14.5"/></svg></span></span>
+            <span class="join__swap join__chip" aria-hidden="true"><span>−25%</span></span>
           </button>
-          <p class="launch__note">Join our waitlist to get a discount code when our product comes out. No commitment, no weekly emails. We’ll send you only one email, when our product comes out.</p>
+          <p class="launch__note">Join our waitlist to get a discount code when our product comes out. We’ll send you only one email, when our product comes out.</p>
         </div>
       </div>
 
@@ -328,6 +339,6 @@
 
   <script src="js/vendor/gsap.min.js" defer></script>
   <script src="js/vendor/ScrollTrigger.min.js" defer></script>
-  <script src="js/main.js" defer></script>
+  <script src="js/main.js?v=3" defer></script>
 </body>
 </html>
