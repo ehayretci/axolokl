@@ -382,12 +382,12 @@ a { color: inherit; }
   border-radius: 0.12em;
   color: var(--graphite);
   /* brushed-metal cylinder: bright in the middle, rolling into shadow top and bottom */
-  background: linear-gradient(180deg, #2c3036 0%, #8d949c 16%, #d9dce0 38%, #f4f5f6 50%, #d9dce0 62%, #8d949c 84%, #2c3036 100%);
+  background: linear-gradient(180deg, #6b7279 0%, #a9afb6 16%, #dfe2e5 38%, #f4f5f6 50%, #dfe2e5 62%, #a9afb6 84%, #6b7279 100%);
   box-shadow: inset 1px 0 0 rgb(0 0 0 / .35), inset -1px 0 0 rgb(0 0 0 / .35);
 }
 .wheel::after {
   content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(180deg, rgb(10 12 14 / .75), transparent 32%, transparent 68%, rgb(10 12 14 / .75));
+  background: linear-gradient(180deg, rgb(10 12 14 / .38), transparent 30%, transparent 70%, rgb(10 12 14 / .38));
 }
 .wheel__strip {
   position: absolute; left: 0; right: 0;
