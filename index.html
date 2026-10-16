@@ -8,7 +8,7 @@
   <link rel="icon" href="assets/logo/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/urbanist-var.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/styles.css?v=6">
+  <link rel="stylesheet" href="css/styles.css?v=7">
   <script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
@@ -304,7 +304,6 @@
   <!-- Waitlist pop-up. Netlify Forms stores submissions; nothing is emailed until launch. -->
   <dialog class="modal" id="waitlist-modal" aria-labelledby="modal-title">
     <div class="modal__bar">
-      <span>The waitlist</span>
       <span class="modal__date">Launching 1 December</span>
       <button class="modal__close" type="button" aria-label="Close" data-waitlist-close>
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 5 L19 19 M19 5 L5 19"/></svg>
@@ -316,24 +315,19 @@
       <p class="visually-hidden"><label>Leave this empty <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
 
       <h2 id="modal-title" class="modal__title">Join the waitlist.</h2>
-      <p class="modal__text">You’ll be eligible for <strong>25% off</strong> the first products we release. We’ll email you once, when Axolokl launches. That’s it.</p>
+      <p class="modal__text">You’ll be eligible for <strong>25% off</strong> the first products we release. We’ll email the discount code when Axolokl launches.</p>
 
       <label class="visually-hidden" for="waitlist-email">Email address</label>
       <input class="modal__input" id="waitlist-email" type="email" name="email" placeholder="you@email.com" autocomplete="email" required>
 
-      <label class="modal__consent">
-        <input type="checkbox" name="consent" value="yes" required>
-        <span>I agree to Axolokl storing my email to send me one launch email with my discount code. You can ask us to delete it anytime at info@axolokl.co.uk.</span>
-      </label>
-
-      <button class="btn btn--big modal__submit" type="submit">Join the waitlist</button>
+      <button class="btn modal__submit" type="submit">Join the waitlist</button>
       <p class="modal__error" role="alert" hidden>Something went wrong. Please try again in a moment.</p>
     </form>
 
     <div class="modal__done" hidden>
       <h2 class="modal__title" tabindex="-1">You’re on the list.</h2>
       <p class="modal__text">We’ll email <strong class="modal__email"></strong> once, on 1 December, with your 25% code.</p>
-      <button class="btn btn--big" type="button" data-waitlist-close>Done</button>
+      <button class="btn" type="button" data-waitlist-close>Done</button>
     </div>
   </dialog>
 

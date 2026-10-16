@@ -317,7 +317,7 @@ a { color: inherit; }
 .join          { grid-column: 2; grid-row: 1 / 3; justify-self: end; align-self: end; margin-bottom: -1.75rem; /* sits closer to the note below */ }
 .launch__note  { grid-column: 2; grid-row: 3; align-self: start; }
 .launch__title {
-  display: flex; align-items: center; gap: 0.3em;
+  display: flex; align-items: center; gap: 0.38em;
   margin: 0;
   font-family: var(--font-display);
   font-weight: 800; font-stretch: 112%;
@@ -466,8 +466,8 @@ a { color: inherit; }
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
 .modal {
-  width: min(92vw, 34rem);
-  padding: 2rem 2.25rem 2.25rem;
+  width: min(92vw, 27rem);
+  padding: 1.5rem 1.75rem 1.75rem;
   border: 1px solid rgb(230 232 235 / .14);
   border-radius: 1.25rem;
   background: var(--graphite);
@@ -482,11 +482,12 @@ a { color: inherit; }
 
 .modal__bar {
   display: flex; align-items: center; gap: 1rem;
-  padding-bottom: 1rem; margin-bottom: 1.75rem;
+  padding-bottom: 0.85rem; margin-bottom: 1.4rem;
   border-bottom: 1px solid rgb(230 232 235 / .14);
   font-size: var(--step--1); font-weight: 600; color: var(--steel);
 }
-.modal__date { color: var(--axo); margin-left: auto; }
+.modal__date { color: var(--axo); }
+.modal__close { margin-left: auto; }
 .modal__close {
   display: grid; place-items: center;
   width: 2rem; height: 2rem; padding: 0;
@@ -500,16 +501,16 @@ a { color: inherit; }
   margin: 0;
   font-family: var(--font-display);
   font-weight: 800; font-stretch: 112%;
-  font-size: clamp(2.4rem, 1.6rem + 2vw, 3.4rem);
-  line-height: 0.92; letter-spacing: -0.035em;
+  font-size: clamp(1.9rem, 1.4rem + 1.2vw, 2.5rem);
+  line-height: 0.95; letter-spacing: -0.035em;
 }
 .modal__title:focus { outline: none; }
-.modal__text { margin: 1rem 0 0; color: rgb(230 232 235 / .72); }
+.modal__text { margin: 0.85rem 0 0; font-size: var(--step--1); line-height: 1.55; color: rgb(230 232 235 / .72); }
 .modal__text strong { color: var(--axo); font-weight: 700; }
 .modal__input {
   display: block; width: 100%;
-  margin-top: 2rem; padding: 0.75rem 0;
-  font: inherit; font-size: var(--step-1);
+  margin-top: 1.5rem; padding: 0.55rem 0;
+  font: inherit; font-size: var(--step-0);
   color: var(--alu);
   background: none;
   border: 0; border-bottom: 1px solid rgb(230 232 235 / .3);
@@ -517,17 +518,15 @@ a { color: inherit; }
 }
 .modal__input::placeholder { color: rgb(230 232 235 / .35); }
 .modal__input:focus { outline: none; border-bottom-color: var(--axo); }
-.modal__consent {
-  display: flex; gap: 0.75rem; align-items: flex-start;
-  margin-top: 1.25rem;
-  font-size: 0.8rem; line-height: 1.45; color: var(--steel);
-  cursor: pointer;
+.modal__submit, .modal__done .btn {
+  width: 100%; justify-content: center;
+  margin-top: 1.5rem; padding: 0.7em 1em;
+  font-size: var(--step-0);
+  border: 0; cursor: pointer;
 }
-.modal__consent input { margin: 0.15rem 0 0; accent-color: var(--axo); width: 1rem; height: 1rem; flex: none; }
-.modal__submit, .modal__done .btn { width: 100%; justify-content: center; margin-top: 1.75rem; border: 0; cursor: pointer; }
-.modal .btn { background: var(--axo); color: var(--graphite); }
-.btn--big { font-size: var(--step-1); padding: 0.85em 1.5em; }
-.modal .btn:hover { background: #f8c1d2; }
+.modal .btn { background: var(--axo); color: var(--graphite); transition: background-color .2s, color .2s; }
+/* same deep-gill hover as the header and launch buttons */
+.modal .btn:hover, .modal .btn:focus-visible { background: var(--gill); color: var(--alu); }
 .modal__error { margin: 1rem 0 0; color: var(--axo); font-size: var(--step--1); }
 
 /* ============ Responsive ============ */
