@@ -7,7 +7,7 @@ The product isn't available yet. This site pitches the problem and collects wait
 ## Working style (owner: Erim)
 - Build one section at a time, then stop and show it. Wait for approval before the next section.
 - Concise replies, plain language. No information dumps, no over-execution.
-- After visual changes, check the result in a browser before reporting. **Desktop only for now (~1440px); don't design for mobile yet.**
+- After visual changes, check the result in a browser before reporting, at desktop (~1440px) and phone (~390px). Mobile styles live in one `@media (max-width: 720px)` block at the end of styles.css; keep desktop unchanged when editing mobile and vice versa.
 - Erim often sends annotated screenshots of the Browser pane and asks for small tweaks; commit only when asked, with the message Erim gives.
 
 ## Stack & decisions
@@ -17,8 +17,9 @@ The product isn't available yet. This site pitches the problem and collects wait
 - GSAP 3.12.7 + ScrollTrigger vendored in js/vendor/ (no CDN). Don't use CSS `scroll-behavior: smooth` — it breaks ScrollTrigger measurements; anchor smooth-scroll is done in js/main.js.
 - Waitlist: Netlify Forms (`name="waitlist"`, data-netlify, honeypot `bot-field`). The consent checkbox was removed at Erim's request; the pop-up copy states the purpose. Add a short privacy notice before going live. Locally the submit is mocked (success state shown); on Netlify it POSTs via fetch. Emails land in the Netlify dashboard; export CSV at launch. Nothing is emailed until launch.
 - Contact: info@axolokl.co.uk. Instagram: instagram.com/axolokl.
-- Deploy: LATER. Domain in progress. Then GitHub (github.com/ehayretci) → Netlify (team erimhayretci) on the custom domain.
-- Git: branch `master`, local only (no remote yet). Commits are made section by section.
+- Hosting: public GitHub repo github.com/ehayretci/axolokl (branch `master`) → Netlify (team erimhayretci), auto-deploys on push. `netlify.toml` publishes the folder as-is and 404s internal files (CLAUDE.md, PLAN.md, README.md, dev-server.py, .claude/). Netlify Forms needs "form detection" enabled in the Netlify UI.
+- Domain: axolokl.co.uk, DNS on Cloudflare. Web records point to Netlify (DNS only, not proxied, so Netlify can issue HTTPS). Cloudflare Email Routing (MX + SPF TXT) handles info@axolokl.co.uk — never touch those records.
+- Git: commits are made section by section, with the message Erim gives. Push to GitHub only when asked (a push = a live deploy once Netlify is connected).
 
 ## Design system (css/styles.css :root)
 - Feel: security, precision, premium hardware. Not gimmicky or cute. Axolotl colours only as accents.
@@ -30,7 +31,7 @@ The product isn't available yet. This site pitches the problem and collects wait
 - Respect prefers-reduced-motion everywhere; visible focus states.
 
 ## Page (index.html), top to bottom — all built
-- Header — non-sticky floating white pill bar: mark + wordmark left; Contact (mailto), Instagram, and "Join the waitlist −25%" (opens the pop-up). Text links get a dashed gill underline on hover.
+- Header — non-sticky floating white pill bar (on phones: logo, mail + Instagram icons, "Join −25%"): mark + wordmark left; Contact (mailto), Instagram, and "Join the waitlist −25%" (opens the pop-up). Text links get a dashed gill underline on hover.
 - 1. Hero — "Your lock held." (top-left) / "Your wheels didn't." (bottom-right), no sub text. Photo assets/img/hero-bike.jpg (1024×765, background pushed to pure white, multiplied onto the page). Ghost wheels: hand-drawn sketch SVG (tyre, tread, hatching, rim, 32 spokes, hub) in gill, drawn BEHIND the frame, centred at image coords (152,652) and (912,548), r262; each stroke traces in on load (slow, ~4.5s), then line 2 fades in at 3.8s. Rear wheel has an SVG mask (circle at 911,562 r44) so the photo's real cassette shows through. The SVG is generated markup (inline, ~80 paths) — edit by hand or regenerate.
 - 2. Problem space — light section, pinned; 4 panels scroll sideways (GSAP), progress counter top-right, inactive panels fade. Each panel: Archivo headline + body + linked source, graphic on the right. Graphics (assets/img/problem-*.jpg) are cropped with equal margins around the drawing and shown at one shared height, fine-tuned with `--scale` per figure; cable-lock has its paper texture edge-faded. Stats/sources: #1 stolen part (thebestbikelock.com), 17%/73% (LCC Cycle Theft Survey 2025), £240–370 rear wheel (Brick Lane Bikes workshop); panel 4 "One tool opens almost every bike" has no source.
 - 3. Launch — graphite sheet with rounded top corners (not full-screen). "Work in progress." with a looping hex-key-turning-a-bolt icon; lede with **1 December** in pink; countdown built as a combination lock (metal wheels per digit that roll, pink index marks; built in main.js, target Date.UTC(2026,11,1)). Right column: pink "Join the waitlist →" button (arrow swaps for −25% chip on hover), note right-aligned and top-aligned with the counter. Footer row: small mark + wordmark, email, Instagram, © 2026.
@@ -38,4 +39,5 @@ The product isn't available yet. This site pitches the problem and collects wait
 
 ## Not built / open
 - Teaser and London map sections from the original plan were not built (launch section took over the CTA + footer role). Ask before adding them.
-- Mobile layout, privacy notice, OG/meta + share image, deploy, QA. See PLAN.md for the pipeline.
+- Privacy notice, OG/meta + share image, QA on real phones. See PLAN.md for the pipeline.
+- Mobile (≤720px) is done for every section: hero lines wrap bigger around a smaller bike; problem panels still scroll sideways, text over graphic; launch stacks in one column and shows the −25% chip without hover. The root clips horizontal overflow so nothing can widen the page.
