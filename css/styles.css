@@ -563,6 +563,24 @@ a { color: inherit; }
   .hero__stage { grid-row: 2; align-self: center; width: 76vw; margin: 1.5rem auto 3rem; }
   .hero__line--b { grid-row: 3; padding-bottom: 0; }
   .hero__cue { display: none; }
+
+  /* ---- Problem space: still scrolls sideways; each panel fills the screen, text over graphic ---- */
+  .problem__pin { padding-top: 1.25rem; }
+  .problem__bar { margin: 0 1rem; }
+  .problem__meter { width: 4.5rem; }
+  .problem__track { gap: 2.5rem; padding: 0 1rem 1.5rem; }
+  .panel {
+    width: calc(100vw - 2rem);
+    grid-template-columns: 1fr;
+    align-content: center;
+    gap: 1.75rem;
+    /* graphics keep one shared height (same idea as desktop), sized to the phone */
+    --media-h: min(30svh, 54vw);
+  }
+  .panel__title { font-size: clamp(1.9rem, 8.6vw, 2.5rem); }
+  .panel__body { margin-top: 0.9rem; max-width: none; font-size: var(--step-0); }
+  .panel__source { margin-top: 0.9rem; }
+  .panel__media { justify-self: center; }
 }
 
 @media (prefers-reduced-motion: reduce) {
