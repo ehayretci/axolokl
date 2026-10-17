@@ -581,6 +581,25 @@ a { color: inherit; }
   .panel__body { margin-top: 0.9rem; max-width: none; font-size: var(--step-0); }
   .panel__source { margin-top: 0.9rem; }
   .panel__media { justify-self: center; }
+
+  /* ---- Launch: one column — title, text, countdown, button, note ---- */
+  .launch { gap: 4rem; padding: 4.5rem 1rem 1.75rem; border-radius: 1.5rem 1.5rem 0 0; }
+  .launch__main { grid-template-columns: 1fr; grid-template-rows: none; }
+  .launch__title { grid-column: 1; grid-row: 1; font-size: clamp(1.9rem, 8.4vw, 2.4rem); }
+  .launch__lede  { grid-column: 1; grid-row: 2; max-width: none; margin-top: 1.25rem; }
+  /* 8 wheels plus gaps are ~8.9em wide, so the countdown's font is tied to the screen width */
+  .lock          { grid-column: 1; grid-row: 3; margin-top: 3.25rem; font-size: clamp(1.8rem, 10vw, 2.5rem); }
+  .join          { grid-column: 1; grid-row: 4; justify-self: stretch; justify-content: center; margin: 3.25rem 0 0; }
+  .launch__note  { grid-column: 1; grid-row: 5; margin-top: 1.25rem; text-align: left; }
+  /* no hover on touch screens: show the discount straight away instead of the arrow */
+  .join .join__arrow { grid-template-columns: 0fr; margin-left: 0; }
+  .join .join__chip { grid-template-columns: 1fr; margin-left: 0.6em; }
+  .join .join__chip > span { padding: 0.2em 0.6em; background: var(--graphite); color: var(--axo); } /* dark chip reads on the pink button */
+  .launch__foot { flex-direction: column; align-items: flex-start; gap: 1.25rem; padding-top: 1.75rem; }
+  .launch__meta { flex-wrap: wrap; gap: 0.5rem 1.25rem; }
+
+  /* ---- Waitlist pop-up ---- */
+  .modal { padding: 1.25rem 1.25rem 1.5rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
