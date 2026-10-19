@@ -9,13 +9,13 @@
   <link rel="icon" href="assets/logo/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/urbanist-var.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/styles.css?v=15">
+  <link rel="stylesheet" href="css/styles.css?v=23">
   <script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
 
   <header class="nav">
-    <a class="logo" href="#top" aria-label="Axolokl home">
+    <div class="logo" role="img" aria-label="Axolokl">
       <svg class="logo__mark" aria-hidden="true" focusable="false" viewBox="0 0 487 249" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M216.404 28.7857C219.076 29.8037 219.848 33.2154 217.874 35.2845L166.989 88.6305L225.165 53.3393C233.697 48.1631 244.389 48.1158 252.967 53.2163L267.867 62.0752C271.656 64.3283 271.803 69.7617 268.141 72.2163L134.375 161.881C115.343 176.302 87.4641 148.905 98.959 127.99L167.012 33.0821C174.684 22.3829 188.601 18.194 200.904 22.8809L216.404 28.7857Z" fill="currentColor"/>
         <path d="M73.7179 65.3352C75.9743 62.7346 80.2435 64.0102 80.7034 67.4223L84.0315 92.1162C84.6173 96.4625 90.7607 96.8344 91.8664 92.5905L100.637 58.9283C100.685 58.7411 100.748 58.5576 100.823 58.3794L113.81 27.6569C118.477 16.6164 129.864 9.97443 141.771 11.347L150.948 12.4049C154.665 12.8333 157.088 16.5226 156.004 20.1039L105.484 186.98C99.5517 209.324 61.9679 205.623 58.2829 182.965L98.0506 135.753C102.824 130.086 103.796 123.108 98.4 118.03C84.8316 105.262 56.8456 84.7814 60.6329 80.4164L73.7179 65.3352Z" fill="currentColor"/>
@@ -37,16 +37,16 @@
       <path d="M161.345 31.0227L157.371 36.8479L171.957 46.963H184.285L161.345 31.0227Z" fill="currentColor"/>
       <path d="M186.227 46.963H193V0H186.227V46.963Z" fill="currentColor"/>
       </svg>
-    </a>
+    </div>
     <nav class="nav__links" aria-label="Main">
       <!-- On phones the two text links collapse to icons and the button shortens to "Join −25%" -->
-      <a class="nav__link" href="mailto:info@axolokl.co.uk">
-        <svg class="nav__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3.5 7 L12 13 L20.5 7"/></svg>
-        <span class="nav__text">Contact</span>
-      </a>
       <a class="nav__link" href="https://www.instagram.com/axolokl/" target="_blank" rel="noopener">
         <svg class="nav__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle class="nav__icon-dot" cx="17.2" cy="6.8" r="0.6"/></svg>
         <span class="nav__text">Instagram</span>
+      </a>
+      <a class="nav__link" href="mailto:info@axolokl.co.uk">
+        <svg class="nav__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3.5 7 L12 13 L20.5 7"/></svg>
+        <span class="nav__text">Contact</span>
       </a>
       <a class="btn btn--small nav__cta" href="#waitlist" data-waitlist-open><span>Join<span class="nav__cta-long"> the waitlist</span></span><span class="nav__chip">−25%</span></a>
     </nav>
@@ -57,8 +57,8 @@
     <!-- 1. HERO -->
     <section class="hero" aria-labelledby="hero-title">
       <h1 id="hero-title" class="hero__title">
-        <span class="hero__line hero__line--a">Your lock held.</span>
-        <span class="hero__line hero__line--b">Your wheels didn’t.</span>
+        <span class="hero__line hero__line--a">Your bike is locked.</span>
+        <span class="hero__line hero__line--b">Are your wheels?</span>
       </h1>
 
       <figure class="hero__stage">
@@ -158,16 +158,13 @@
         </svg>
       </figure>
 
-      <a class="hero__cue" href="#problem" aria-label="Scroll to the problem">
-        <span></span>
-      </a>
     </section>
 
     <!-- 2. PROBLEM — sticky section, panels scroll sideways -->
     <section id="problem" class="problem" aria-labelledby="problem-title">
       <div class="problem__pin">
         <div class="problem__bar">
-          <h2 id="problem-title" class="problem__label">Problem space</h2>
+          <h2 id="problem-title" class="visually-hidden">Problem space</h2>
           <div class="problem__progress" aria-hidden="true">
             <span class="problem__count"><span class="problem__current">01</span> / 04</span>
             <span class="problem__meter"><span></span></span>
@@ -178,20 +175,8 @@
 
           <article class="panel">
             <div class="panel__text">
-              <h3 class="panel__title">Wheels are the #1 stolen bike part in London.</h3>
-              <p class="panel__body">Thieves skip the lock and take what comes off fastest. The frame stays chained up. The wheels don’t.</p>
-              <p class="panel__source">Source: <a href="https://thebestbikelock.com/bike-theft-statistics-uk/" target="_blank" rel="noopener">The Best Bike Lock, UK bike theft statistics</a></p>
-            </div>
-            <figure class="panel__media">
-              <img src="assets/img/problem-wheel-thief.jpg" width="1222" height="816" loading="lazy"
-                   alt="Illustration: a hooded thief crouches beside a bike locked to a post and pulls the front wheel off with a hand tool.">
-            </figure>
-          </article>
-
-          <article class="panel">
-            <div class="panel__text">
-              <h3 class="panel__title">Few protect their wheels. Most get hit anyway.</h3>
-              <p class="panel__body">Only 17% of cyclists protect their wheels from theft, yet 73% are hit by theft at some point in their lives.</p>
+              <h3 class="panel__title">73% of cyclists experience bike theft.</h3>
+              <p class="panel__body">Carrying two heavy locks is a pain, and cheap cable locks can be snipped in seconds. Securing your wheels shouldn’t mean extra baggage.</p>
               <p class="panel__source">Source: <a href="https://lcc.org.uk/wp-content/uploads/2026/05/Cycle-Theft-Survey-2025-PDF-Report.pdf" target="_blank" rel="noopener">London Cycling Campaign, Cycle Theft Survey 2025</a></p>
             </div>
             <figure class="panel__media panel__media--textured" style="--scale: 1.15">
@@ -202,24 +187,37 @@
 
           <article class="panel">
             <div class="panel__text">
-              <h3 class="panel__title">£240–370 to replace one rear wheel.</h3>
-              <p class="panel__body">That’s the average cost of a new rear wheel, before the tyre, the cassette and the days you lose without a bike.</p>
-              <p class="panel__source">Source: <a href="https://www.bricklanebikes.co.uk/brands/workshop" target="_blank" rel="noopener">Brick Lane Bikes, workshop prices</a></p>
+              <h3 class="panel__title">Wheels are the #1 stolen bike part in London.</h3>
+              <p class="panel__body">Cutting through a bike lock takes time and effort. Instead, thieves take what comes off fastest.</p>
+              <p class="panel__source">Source: <a href="https://thebestbikelock.com/bike-theft-statistics-uk/" target="_blank" rel="noopener">The Best Bike Lock, UK bike theft statistics</a></p>
             </div>
-            <figure class="panel__media" style="--scale: 1.15">
-              <img src="assets/img/problem-wheel-parts.jpg" width="880" height="723" loading="lazy"
-                   alt="Illustration: a rear wheel exploded into tyre, inner tube, rim and cassette as a hand undoes the axle nut with a spanner.">
+            <figure class="panel__media">
+              <img src="assets/img/problem-wheel-thief.jpg" width="1222" height="816" loading="lazy"
+                   alt="Illustration: a hooded thief crouches beside a bike locked to a post and pulls the front wheel off with a hand tool.">
             </figure>
           </article>
 
           <article class="panel">
             <div class="panel__text">
-              <h3 class="panel__title">One tool opens almost every bike.</h3>
-              <p class="panel__body">Quick releases open by hand in seconds. Bolted axles take a standard hex key, so the same key fits wheel after wheel.</p>
+              <h3 class="panel__title">One basic tool removes every wheel.</h3>
+              <p class="panel__body">Quick-release levers undo by hand in seconds. Almost every other wheel bolt needs nothing more than a standard hex key.</p>
+              <p class="panel__source">Source: interviews with 9 bike shops across London</p>
             </div>
             <figure class="panel__media" style="--scale: 1.035">
               <img src="assets/img/problem-one-key.jpg" width="1124" height="805" loading="lazy"
                    alt="Illustration: one hex key shown fitting the bolts on a seat clamp, a front axle, a rear axle and a stem.">
+            </figure>
+          </article>
+
+          <article class="panel">
+            <div class="panel__text">
+              <h3 class="panel__title">Replacing one wheel costs £100 to £150.</h3>
+              <p class="panel__body">That’s the average price of a new mid-range wheel. Until it’s fixed, you’re left with a bike you can’t ride, and a commute you have to replace.</p>
+              <p class="panel__source">Source: interviews with 9 bike shops across London</p>
+            </div>
+            <figure class="panel__media" style="--scale: 1.15">
+              <img src="assets/img/problem-wheel-parts.jpg" width="880" height="723" loading="lazy"
+                   alt="Illustration: a rear wheel exploded into tyre, inner tube, rim and cassette as a hand undoes the axle nut with a spanner.">
             </figure>
           </article>
 
@@ -228,11 +226,9 @@
     </section>
 
 
-    <!-- 3. LAUNCH — dark sheet: work in progress, lock-dial countdown, waitlist -->
-    <section id="waitlist" class="launch" aria-labelledby="launch-title">
-      <div class="launch__main">
-        <div class="launch__story">
-          <h2 id="launch-title" class="launch__title">
+    <!-- 3. TEASER — light: what we're building and when -->
+    <section class="teaser" aria-labelledby="teaser-title">
+      <p class="teaser__wip">
             <!-- Looping icon: a hex key turning a bolt, a quarter-step at a time -->
             <svg class="wip" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
               <circle class="wip__head" cx="32" cy="32" r="22"/>
@@ -241,30 +237,39 @@
                 <path class="wip__key" d="M32 32 L32 4 L50 4"/>
               </g>
             </svg>
-            <span>Work in progress.</span>
-          </h2>
-          <p class="launch__lede">We’re making the world’s most secure bike lock. Coming out on <strong>1 December</strong>.</p>
+        <span>Work in progress.</span>
+      </p>
+      <h2 id="teaser-title" class="teaser__title">We’re building the <em>ultimate</em> solution<br> against wheel theft.</h2>
+      <p class="teaser__date">Launching <strong>1 December 2026</strong></p>
+    </section>
+
+    <!-- 4. WAITLIST — dark sheet: join, lock-dial countdown, footer -->
+    <section id="waitlist" class="launch" aria-labelledby="launch-title">
+      <div class="launch__main">
+        <div class="launch__story">
+          <h2 id="launch-title" class="launch__title">Join the waitlist.</h2>
+          <p class="launch__lede">Keep your wheels where they belong. Get <strong>25% off</strong> at launch.</p>
 
           <!-- Countdown as a combination lock: each digit is a rotating wheel (built in main.js) -->
-          <div class="lock" role="timer" aria-label="Time until launch on 1 December 2026">
-            <div class="lock__group" data-unit="days">
-              <div class="lock__wheels"></div>
-              <span class="lock__label">days</span>
+            <div class="lock" role="timer" aria-label="Time until launch on 1 December 2026">
+              <div class="lock__group" data-unit="days">
+                <div class="lock__wheels"></div>
+                <span class="lock__label">days</span>
+              </div>
+              <div class="lock__group" data-unit="hours">
+                <div class="lock__wheels"></div>
+                <span class="lock__label">hours</span>
+              </div>
+              <div class="lock__group" data-unit="minutes">
+                <div class="lock__wheels"></div>
+                <span class="lock__label">minutes</span>
+              </div>
+              <div class="lock__group" data-unit="seconds">
+                <div class="lock__wheels"></div>
+                <span class="lock__label">seconds</span>
+              </div>
+              <span class="visually-hidden" data-countdown-text></span>
             </div>
-            <div class="lock__group" data-unit="hours">
-              <div class="lock__wheels"></div>
-              <span class="lock__label">hours</span>
-            </div>
-            <div class="lock__group" data-unit="minutes">
-              <div class="lock__wheels"></div>
-              <span class="lock__label">minutes</span>
-            </div>
-            <div class="lock__group" data-unit="seconds">
-              <div class="lock__wheels"></div>
-              <span class="lock__label">seconds</span>
-            </div>
-            <span class="visually-hidden" data-countdown-text></span>
-          </div>
         </div>
 
         <div class="launch__cta">
@@ -274,7 +279,7 @@
             <span class="join__swap join__arrow" aria-hidden="true"><span><svg viewBox="0 0 20 20" focusable="false"><path d="M4 10 H15 M10.5 5.5 L15 10 L10.5 14.5"/></svg></span></span>
             <span class="join__swap join__chip" aria-hidden="true"><span>−25%</span></span>
           </button>
-          <p class="launch__note">Join our waitlist to get a discount code when our product comes out. We’ll send you only one email, when our product comes out.</p>
+          <p class="launch__note">Join the waitlist to get an exclusive 25% discount code on launch day. Zero spam: we will only send you one email when we go live.</p>
         </div>
       </div>
 
@@ -325,7 +330,7 @@
       <p class="visually-hidden"><label>Leave this empty <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
 
       <h2 id="modal-title" class="modal__title">Join the waitlist.</h2>
-      <p class="modal__text">You’ll be eligible for <strong>25% off</strong> our first products. We’ll email the code when Axolokl launches.</p>
+      <p class="modal__text">You’ll be eligible for <strong>25% off</strong> on our first launch. We’ll email the code when Axolokl launches.</p>
 
       <label class="visually-hidden" for="waitlist-email">Email address</label>
       <input class="modal__input" id="waitlist-email" type="email" name="email" placeholder="you@email.com" autocomplete="email" required>
@@ -343,6 +348,6 @@
 
   <script src="js/vendor/gsap.min.js" defer></script>
   <script src="js/vendor/ScrollTrigger.min.js" defer></script>
-  <script src="js/main.js?v=3" defer></script>
+  <script src="js/main.js?v=4" defer></script>
 </body>
 </html>

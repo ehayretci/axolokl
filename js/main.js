@@ -36,6 +36,13 @@ window.addEventListener('DOMContentLoaded', () => {
         start: 'top top',
         end: () => '+=' + distance(),
         scrub: 0.6,
+        // when scrolling stops, glide to the nearest whole panel instead of resting between two
+        snap: {
+          snapTo: 1 / (panels.length - 1),
+          duration: { min: 0.25, max: 0.7 },
+          delay: 0.08,
+          ease: 'power2.inOut',
+        },
         invalidateOnRefresh: true,
         onUpdate: (self) => {
           meter.style.setProperty('--p', self.progress.toFixed(3));

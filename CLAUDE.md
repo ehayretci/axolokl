@@ -18,7 +18,8 @@ The product isn't available yet. This site pitches the problem and collects wait
 - Waitlist: Netlify Forms (`name="waitlist"`, data-netlify, honeypot `bot-field`). The consent checkbox was removed at Erim's request; the pop-up copy states the purpose. Add a short privacy notice before going live. Locally the submit is mocked (success state shown); on Netlify it POSTs via fetch. Emails land in the Netlify dashboard; export CSV at launch. Nothing is emailed until launch.
 - Contact: info@axolokl.co.uk. Instagram: instagram.com/axolokl.
 - Hosting: public GitHub repo github.com/ehayretci/axolokl (branch `master`) → Netlify (team erimhayretci), auto-deploys on push. `netlify.toml` publishes the folder as-is and 404s internal files (CLAUDE.md, PLAN.md, README.md, dev-server.py, .claude/). Netlify Forms needs "form detection" enabled in the Netlify UI.
-- Domain: axolokl.co.uk, DNS on Cloudflare. Web records point to Netlify (DNS only, not proxied, so Netlify can issue HTTPS). Cloudflare Email Routing (MX + SPF TXT) handles info@axolokl.co.uk — never touch those records.
+- Live now at https://axolokl.netlify.app (Netlify project "axolokl", team Erim; form detection on, "waitlist" form active).
+- Domain: axolokl.co.uk is added in Netlify (primary, www redirects) but NOT pointed yet: its DNS is on Cloudflare in a friend's account, not Erim's. To finish: in that Cloudflare zone, replace the web records for `@` and `www` with CNAME → axolokl.netlify.app, proxy OFF (grey cloud), then Netlify issues HTTPS. Cloudflare Email Routing (MX + SPF TXT) handles info@axolokl.co.uk — never touch those records.
 - Git: commits are made section by section, with the message Erim gives. Push to GitHub only when asked (a push = a live deploy once Netlify is connected).
 
 ## Design system (css/styles.css :root)
