@@ -196,7 +196,7 @@ a { color: inherit; }
 .problem { background: var(--paper); }
 .problem__pin {
   height: 100vh;
-  padding-top: 2rem;
+  padding-top: 6.25rem; /* clears the sticky nav */
   display: flex; flex-direction: column;
   overflow: hidden;
 }
@@ -227,16 +227,19 @@ a { color: inherit; }
   display: flex; align-items: center;
   gap: 10vw;
   width: max-content;
-  padding: 0 var(--gutter) 2rem;
+  /* side padding = half the leftover width, so every panel lands dead centre when it snaps */
+  padding: 0 calc((100vw - min(88vw, 1320px)) / 2) 2rem;
   background: var(--paper);
   will-change: transform;
 }
 .panel {
   width: min(88vw, 1320px);
   display: grid;
-  grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr);
+  /* text column, then the graphic right beside it, the pair centred in the panel */
+  grid-template-columns: fit-content(23rem) auto;
+  justify-content: center;
   align-items: center;
-  gap: 3vw;
+  gap: 4rem;
 }
 .panel__title {
   margin: 0;
@@ -258,7 +261,7 @@ a { color: inherit; }
    one shared height, so the drawings come out the same size and line up.
    --scale on a figure fine-tunes one graphic by eye. */
 .panel { --media-h: min(58vh, 530px, 36vw); }
-.panel__media { margin: 0; justify-self: center; }
+.panel__media { margin: 0; justify-self: start; }
 .panel__media img { height: calc(var(--media-h) * var(--scale, 1)); width: auto; max-width: none; }
 /* this graphic has its own paper texture at the edges: fade it out so no square shows */
 .panel__media--textured img {
@@ -580,7 +583,7 @@ a { color: inherit; }
   .hero__line--b { grid-row: 3; padding-bottom: 0; }
 
   /* ---- Problem space: still scrolls sideways; each panel fills the screen, text over graphic ---- */
-  .problem__pin { padding-top: 1.25rem; }
+  .problem__pin { padding-top: 5rem; }
   .problem__bar { margin: 0 1rem; }
   .problem__meter { width: 4.5rem; }
   .problem__track { gap: 3.5rem; padding: 0 1rem 1.5rem; }
