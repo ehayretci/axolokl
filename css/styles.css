@@ -60,7 +60,7 @@ a { color: inherit; }
 
 /* ============ Nav (not sticky) ============ */
 .nav {
-  position: absolute; z-index: 50;
+  position: fixed; z-index: 50;
   top: 1rem; left: var(--gutter); right: var(--gutter);
   display: flex; align-items: center; justify-content: space-between;
   padding: 0.65rem 0.65rem 0.65rem 1.25rem;
