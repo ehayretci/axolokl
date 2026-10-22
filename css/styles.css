@@ -96,6 +96,7 @@ a { color: inherit; }
 .nav__link:hover::after,
 .nav__link:focus-visible::after { clip-path: inset(0 0 0 0); }
 .nav__icon { display: none; }
+.nav__cta-short { display: none; }
 .nav__cta { gap: 0.6rem; }
 .nav__chip {
   font-size: 0.75em; font-weight: 700;
@@ -550,6 +551,55 @@ a { color: inherit; }
 .modal .btn:hover, .modal .btn:focus-visible { background: var(--gill); color: var(--alu); }
 .modal__error { margin: 1rem 0 0; color: var(--axo); font-size: var(--step--1); }
 
+/* ---- Survey steps inside the pop-up ---- */
+.survey__step { margin: 0; padding: 0; border: 0; min-width: 0; }
+.survey__step[hidden] { display: none; }
+.survey__q {
+  display: block; padding: 0; margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800; font-stretch: 112%;
+  font-size: clamp(1.35rem, 1.1rem + 0.7vw, 1.65rem);
+  line-height: 1.1; letter-spacing: -0.025em;
+  color: var(--alu);
+}
+.survey__q:focus { outline: none; }
+.survey__q em { font-style: italic; color: var(--axo); }
+.survey__hint { margin: 0.6rem 0 0; font-size: var(--step--1); color: var(--steel); }
+.survey__chips { display: grid; gap: 0.5rem; margin-top: 1.25rem; }
+.survey__chips--two { grid-template-columns: 1fr 1fr; }
+.survey__chips--price { grid-template-columns: repeat(4, 1fr); }
+.chip { position: relative; display: block; cursor: pointer; }
+.chip--wide { grid-column: 1 / -1; }
+.chip input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.chip span {
+  display: block;
+  padding: 0.7em 0.5em;
+  text-align: center;
+  font-weight: 600; font-variant-numeric: tabular-nums;
+  color: var(--alu);
+  border: 1px solid rgb(230 232 235 / .22);
+  border-radius: 999px;
+  transition: background-color .15s, border-color .15s, color .15s;
+}
+.chip:hover span { border-color: var(--axo); }
+.chip input:checked + span { background: var(--axo); border-color: var(--axo); color: var(--graphite); }
+.chip input:focus-visible + span { outline: 2px solid var(--axo); outline-offset: 2px; }
+/* prices below an earlier answer are greyed out (they would contradict it) */
+.chip input:disabled + span { opacity: .25; cursor: not-allowed; }
+.chip input:disabled { cursor: not-allowed; }
+.survey__nav {
+  display: flex; align-items: center; gap: 1rem;
+  margin-top: 1.5rem; padding-top: 1rem;
+  border-top: 1px solid rgb(230 232 235 / .14);
+  font-size: var(--step--1); color: var(--steel);
+}
+.survey__nav[hidden] { display: none; }
+.survey__back { padding: 0; background: none; border: 0; font: inherit; color: var(--alu); cursor: pointer; text-decoration: underline; text-underline-offset: 0.2em; }
+.survey__back:hover { color: var(--axo); }
+.survey__count { margin-left: auto; font-variant-numeric: tabular-nums; }
+.survey__meter { position: relative; width: 5rem; height: 2px; background: rgb(230 232 235 / .15); }
+.survey__meter span { position: absolute; inset: 0; background: var(--axo); transform-origin: left; transform: scaleX(0); transition: transform .35s var(--ease-out); }
+
 /* ============ Responsive ============ */
 @media (max-width: 720px) {
   /* ---- Header: same floating pill, tighter; text links become icons ---- */
@@ -563,6 +613,7 @@ a { color: inherit; }
   .nav__link:hover, .nav__link:focus-visible { color: var(--gill); }
   .nav__icon { display: block; width: 1.3rem; height: 1.3rem; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; }
   .nav__icon-dot { fill: currentColor; stroke: none; }
+  .nav__cta-short { display: inline; }
   .nav__text, .nav__cta-long {
     position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
   }

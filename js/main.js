@@ -111,19 +111,83 @@ document.addEventListener('click', (e) => {
   requestAnimationFrame(() => requestAnimationFrame(tick));
 })();
 
-// ---- Waitlist pop-up (Netlify Forms) ----
+// ---- Survey + waitlist pop-up (Netlify Forms) ----
 (() => {
   const modal = document.getElementById('waitlist-modal');
   if (!modal) return;
   const form = modal.querySelector('form');
   const done = modal.querySelector('.modal__done');
   const error = modal.querySelector('.modal__error');
-  const submit = modal.querySelector('.modal__submit');
+  const submit = form.querySelector('button[type="submit"]');
+  const steps = [...form.querySelectorAll('.survey__step')];
+  const nav = form.querySelector('.survey__nav');
+  const num = form.querySelector('[data-survey-num]');
+  const meter = form.querySelector('.survey__meter span');
+  const QUESTIONS = 5;
+  let current = 0;
+
+  // Where the visitor came from (QR / UTM tags on the landing URL). Kept for the session,
+  // so the tags survive if they browse before opening the survey.
+  const sourceField = form.querySelector('input[name="source"]');
+  let source = location.search.slice(1);
+  try {
+    if (source) sessionStorage.setItem('axolokl-source', source);
+    else source = sessionStorage.getItem('axolokl-source') || '';
+  } catch { /* storage blocked: use this page's tags only */ }
+  sourceField.value = source || 'direct';
+
+  const show = (n) => {
+    current = n;
+    steps.forEach((step, i) => { step.hidden = i !== n; });
+    const isQuestion = n >= 1 && n <= QUESTIONS;
+    nav.hidden = n === 0;
+    num.textContent = Math.min(n, QUESTIONS);
+    nav.querySelector('.survey__count').hidden = !isQuestion;
+    meter.style.transform = `scaleX(${Math.min(n, QUESTIONS + 1) / (QUESTIONS + 1)})`;
+    if (steps[n].querySelector('[data-price]')) limitPrices(n);
+    const heading = steps[n].querySelector('legend, .survey__q, .modal__title');
+    if (heading) heading.focus({ preventScroll: true });
+    if (n === QUESTIONS + 1) form.email.focus();
+  };
+
+  // A price answer can't be lower than the one before it (cheap → deal → expensive → too expensive)
+  const rankOf = (step) => {
+    const picked = step.querySelector('input:checked');
+    return picked ? Number(picked.dataset.rank) : 0;
+  };
+  const limitPrices = (n) => {
+    let min = 0;
+    for (let i = 2; i < n; i++) min = Math.max(min, rankOf(steps[i]));
+    steps[n].querySelectorAll('input').forEach((input) => {
+      input.disabled = Number(input.dataset.rank) < min;
+      if (input.disabled && input.checked) input.checked = false;
+    });
+  };
+
+  const answered = (n) => !!steps[n].querySelector('input:checked');
+
+  // Tapping an answer moves on by itself; keyboard users pick with arrows and press Enter
+  let pointerPick = false;
+  form.addEventListener('pointerdown', (e) => { pointerPick = !!e.target.closest('.chip'); });
+  form.addEventListener('change', (e) => {
+    if (!e.target.matches('input[type="radio"]')) return;
+    if (pointerPick && current <= QUESTIONS) setTimeout(() => show(current + 1), 220);
+    pointerPick = false;
+  });
+  form.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.target.matches('input[type="radio"]') && answered(current)) {
+      e.preventDefault();
+      show(current + 1);
+    }
+  });
+  form.querySelector('[data-survey-next]').addEventListener('click', () => show(1));
+  form.querySelector('[data-survey-back]').addEventListener('click', () => show(Math.max(0, current - 1)));
 
   document.addEventListener('click', (e) => {
     if (e.target.closest('[data-waitlist-open]')) {
       e.preventDefault();
       modal.showModal();
+      if (!form.hidden) show(current);
     } else if (e.target.closest('[data-waitlist-close]')) {
       modal.close();
     }
@@ -135,6 +199,7 @@ document.addEventListener('click', (e) => {
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (!form.email.checkValidity()) { form.email.reportValidity(); return; }
     error.hidden = true;
     submit.disabled = true;
     try {
@@ -146,6 +211,8 @@ document.addEventListener('click', (e) => {
           body: new URLSearchParams(new FormData(form)).toString(),
         });
         if (!res.ok) throw new Error(res.status);
+      } else {
+        console.info('[survey] mock submit', Object.fromEntries(new FormData(form)));
       }
       done.querySelector('.modal__email').textContent = form.email.value;
       form.hidden = true;
