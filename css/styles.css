@@ -550,6 +550,9 @@ a { color: inherit; }
 /* same deep-gill hover as the header and launch buttons */
 .modal .btn:hover, .modal .btn:focus-visible { background: var(--gill); color: var(--alu); }
 .modal__error { margin: 1rem 0 0; color: var(--axo); font-size: var(--step--1); }
+.modal__privacy { margin: 1rem 0 0; font-size: 0.75rem; line-height: 1.5; color: var(--steel); }
+.modal__privacy a { color: var(--alu); text-underline-offset: 0.2em; }
+.modal__privacy a:hover { color: var(--axo); }
 
 /* ---- Survey steps inside the pop-up ---- */
 .survey__step { margin: 0; padding: 0; border: 0; min-width: 0; }
@@ -662,6 +665,33 @@ a { color: inherit; }
 .survey__count { margin-left: auto; font-variant-numeric: tabular-nums; }
 .survey__meter { position: relative; width: 5rem; height: 2px; background: rgb(230 232 235 / .15); }
 .survey__meter span { position: absolute; inset: 0; background: var(--axo); transform-origin: left; transform: scaleX(0); transition: transform .35s var(--ease-out); }
+
+/* ============ Privacy page ============ */
+.legal { max-width: 44rem; margin: 0 auto; padding: 3rem var(--gutter) 6rem; }
+.legal__back { display: inline-block; font-size: var(--step--1); font-weight: 600; color: var(--steel); text-decoration: none; }
+.legal__back:hover { color: var(--gill); }
+.legal__title {
+  margin: 2.5rem 0 0;
+  font-family: var(--font-display);
+  font-weight: 800; font-stretch: 112%;
+  font-size: clamp(2.6rem, 1.6rem + 3vw, 4rem);
+  line-height: 0.95; letter-spacing: -0.035em;
+}
+.legal__updated { margin: 1rem 0 0; font-size: var(--step--1); color: var(--steel); }
+.legal h2 {
+  margin: 2.75rem 0 0.75rem;
+  font-family: var(--font-display);
+  font-weight: 800; font-stretch: 112%;
+  font-size: var(--step-1); letter-spacing: -0.02em;
+}
+.legal p, .legal li { color: #3E444B; }
+.legal p { margin: 0.75rem 0 0; }
+.legal ul { margin: 0.75rem 0 0; padding-left: 1.2rem; display: grid; gap: 0.5rem; }
+.legal strong { color: var(--graphite); font-weight: 700; }
+.legal a { color: var(--gill); text-underline-offset: 0.2em; }
+.legal mark { background: rgb(244 169 192 / .35); color: var(--graphite); padding: 0 0.2em; border-radius: 3px; }
+.legal p.legal__action { margin-top: 1.75rem; }
+.legal__optout { border: 0; cursor: pointer; }
 
 /* ============ Responsive ============ */
 @media (max-width: 720px) {

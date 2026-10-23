@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Privacy notice — Axolokl</title>
+  <meta name="description" content="What Axolokl collects through the waitlist, survey and QR tags, why, and your rights under UK GDPR.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="assets/logo/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/styles.css?v=36">
+</head>
+<body class="legal-page">
+
+  <main class="legal">
+    <a class="legal__back" href="./">← Back to Axolokl</a>
+
+    <h1 class="legal__title">Privacy notice</h1>
+    <p class="legal__updated">Last updated 23 October 2026</p>
+
+    <h2>Who we are</h2>
+    <p>Axolokl is a student project in the Design Engineering master’s programme at Imperial College London. We’re designing a wheel lock against bike-wheel theft in London. If you have any question about your data, email us at <a href="mailto:info@axolokl.co.uk">info@axolokl.co.uk</a>.</p>
+
+    <h2>What we collect</h2>
+    <ul>
+      <li><strong>Your email address</strong>, if you join the waitlist.</li>
+      <li><strong>Your survey answers:</strong> whether you’ve had a bike part stolen, and your answers to the four price questions.</li>
+      <li><strong>If you scanned one of our QR tags on a bike:</strong> which tag it was. Each tag is unique, so it tells us which bike it was on, and where and when we put it there.</li>
+      <li><strong>Basic visit data:</strong> anonymous page-view statistics, and the technical logs our website host keeps, such as your IP address.</li>
+    </ul>
+    <p>Answering the survey is optional, and you can leave at any point.</p>
+
+    <h2>Why we collect it</h2>
+    <ul>
+      <li>To send you your 25% discount code when Axolokl launches. That’s the only email we plan to send.</li>
+      <li>For market research for our university project: to understand who wants Axolokl, what they would pay, and which bikes and places they use.</li>
+    </ul>
+
+    <h2>Our legal basis</h2>
+    <ul>
+      <li><strong>Emails:</strong> your consent, which you give when you join the waitlist. You can withdraw it at any time by using the unsubscribe link in the email or by emailing us.</li>
+      <li><strong>Survey answers and tag data:</strong> your consent. Taking part is optional, and you can ask us to delete your answers at any time.</li>
+    </ul>
+
+    <h2>Who else sees it</h2>
+    <ul>
+      <li><strong>Netlify</strong>, which hosts this website and stores the waitlist and survey answers.</li>
+      <li><strong>Umami</strong>, which gives us anonymous visit statistics without cookies.</li>
+      <li><strong>Google (Gmail)</strong>, which we use to send the launch email.</li>
+      <li>Module staff at Imperial College London, who may see our results. We share results as totals, not as individual answers.</li>
+    </ul>
+    <p>We don’t sell your data or share it with anyone for advertising.</p>
+
+    <h2>International transfers</h2>
+    <p>Our providers are based in the United States and may store data there. Netlify protects transfers from the UK with the Information Commissioner’s international data transfer addendum to the EU standard contractual clauses, as set out in its data processing agreement. Umami and Google may also process data outside the UK, under their own terms.</p>
+
+    <h2>How long we keep it</h2>
+    <p>We keep your data only for the length of the project and delete all of it by 1 July 2027.</p>
+
+    <h2>Your rights</h2>
+    <p>You can ask us to see, correct or delete your data, object to how we use it, or withdraw your consent at any time. Just email <a href="mailto:info@axolokl.co.uk">info@axolokl.co.uk</a>. We make no automated decisions about anyone.</p>
+    <p>If you’re unhappy with how we handle your data, you can complain to the Information Commissioner’s Office at <a href="https://ico.org.uk/make-a-complaint/" target="_blank" rel="noopener">ico.org.uk/make-a-complaint</a>.</p>
+
+    <h2>Cookies and analytics</h2>
+    <p>We don’t use cookies. Our analytics tool, Umami, counts page views without cookies and without identifying you. If you arrive from a QR tag, we keep the tag’s code in your browser for that visit only, so your survey answers stay linked to the tag. It’s cleared when you close the tab.</p>
+    <p>If you’d rather not be counted at all, you can turn analytics off on this device:</p>
+    <p class="legal__action"><button class="btn legal__optout" type="button" data-analytics-optout>Turn off analytics on this device</button></p>
+  </main>
+
+  <script>
+    // Umami skips counting while localStorage 'umami.disabled' is set
+    (() => {
+      const btn = document.querySelector('[data-analytics-optout]');
+      const read = () => { try { return localStorage.getItem('umami.disabled') === '1'; } catch { return false; } };
+      const render = () => { btn.textContent = read() ? 'Analytics is off on this device. Turn it back on' : 'Turn off analytics on this device'; };
+      btn.addEventListener('click', () => {
+        try {
+          if (read()) localStorage.removeItem('umami.disabled');
+          else localStorage.setItem('umami.disabled', '1');
+        } catch { btn.textContent = 'Your browser blocked this setting'; return; }
+        render();
+      });
+      render();
+    })();
+  </script>
+</body>
+</html>
