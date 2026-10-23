@@ -567,7 +567,70 @@ a { color: inherit; }
 .survey__hint { margin: 0.6rem 0 0; font-size: var(--step--1); color: var(--steel); }
 .survey__chips { display: grid; gap: 0.5rem; margin-top: 1.25rem; }
 .survey__chips--two { grid-template-columns: 1fr 1fr; }
-.survey__chips--price { grid-template-columns: repeat(4, 1fr); }
+/* ---- Concept card: what they're pricing ---- */
+.survey__art { display: block; width: 100%; height: auto; max-height: 8.5rem; margin: 1.25rem 0 0.25rem; overflow: visible; }
+.survey__art path, .survey__art circle, .survey__art rect { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.art__wheel path { stroke: rgb(230 232 235 / .4); stroke-width: 1.6; }
+.art__fork { stroke: var(--alu); stroke-width: 7; }
+.art__lock rect { stroke: var(--axo); stroke-width: 3; fill: var(--graphite); }
+.art__lock circle, .art__lock path { stroke: var(--axo); stroke-width: 2.4; }
+.art__guide { stroke: var(--axo); stroke-width: 1.6; stroke-dasharray: 3 5; opacity: .7; }
+.art__key circle, .art__key path { stroke: var(--axo); stroke-width: 3; }
+.survey__points { margin: 1rem 0 0; padding: 0; list-style: none; display: grid; gap: 0.7rem; }
+.survey__points li {
+  position: relative; padding-left: 1.4rem;
+  font-size: var(--step-0); line-height: 1.45; color: var(--alu);
+}
+.survey__points li::before {
+  content: ""; position: absolute; left: 0; top: 0.7em;
+  width: 0.7rem; height: 2px; background: var(--axo);
+}
+
+/* ---- Price slider ---- */
+.survey__slider { margin-top: 1.25rem; }
+.survey__value {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 800; font-stretch: 112%;
+  font-size: 2.4rem; line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--axo);
+}
+.survey__range {
+  -webkit-appearance: none; appearance: none;
+  display: block; width: 100%;
+  margin: 1.1rem 0 0; height: 2rem;
+  background: transparent; cursor: pointer;
+}
+.survey__range::-webkit-slider-runnable-track { height: 4px; border-radius: 4px; background: rgb(230 232 235 / .18); }
+.survey__range::-moz-range-track { height: 4px; border-radius: 4px; background: rgb(230 232 235 / .18); }
+.survey__range::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 1.5rem; height: 1.5rem; margin-top: calc(2px - 0.75rem);
+  border-radius: 50%; background: var(--axo);
+  border: 3px solid var(--graphite); box-shadow: 0 0 0 1px var(--axo);
+}
+.survey__range::-moz-range-thumb {
+  width: 1.5rem; height: 1.5rem;
+  border-radius: 50%; background: var(--axo);
+  border: 3px solid var(--graphite); box-shadow: 0 0 0 1px var(--axo);
+}
+.survey__range:focus-visible { outline: none; }
+.survey__range:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 1px var(--axo), 0 0 0 5px rgb(244 169 192 / .35); }
+.survey__range:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 1px var(--axo), 0 0 0 5px rgb(244 169 192 / .35); }
+/* scale under the track: 9 labels spread so each sits under its stop */
+.survey__scale {
+  display: flex; justify-content: space-between;
+  margin: 0.35rem 0.1rem 0;
+  font-size: 0.72rem; font-variant-numeric: tabular-nums;
+  color: var(--steel);
+}
+.survey__scale span { width: 0; display: flex; justify-content: center; white-space: nowrap; }
+.survey__scale span:first-child { justify-content: flex-start; }
+.survey__scale span:last-child { justify-content: flex-end; }
+/* values below an earlier answer can't be picked */
+.survey__scale span.is-below { opacity: .3; text-decoration: line-through; }
 .chip { position: relative; display: block; cursor: pointer; }
 .chip--wide { grid-column: 1 / -1; }
 .chip input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }

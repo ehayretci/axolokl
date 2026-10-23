@@ -123,7 +123,8 @@ document.addEventListener('click', (e) => {
   const nav = form.querySelector('.survey__nav');
   const num = form.querySelector('[data-survey-num]');
   const meter = form.querySelector('.survey__meter span');
-  const QUESTIONS = 5;
+  const concept = steps.findIndex((step) => step.classList.contains('survey__concept'));
+  const last = steps.length - 1;
   let current = 0;
 
   // Where the visitor came from (QR / UTM tags on the landing URL). Kept for the session,
@@ -139,49 +140,72 @@ document.addEventListener('click', (e) => {
   const show = (n) => {
     current = n;
     steps.forEach((step, i) => { step.hidden = i !== n; });
-    const isQuestion = n >= 1 && n <= QUESTIONS;
-    nav.hidden = n === 0;
-    num.textContent = Math.min(n, QUESTIONS);
-    nav.querySelector('.survey__count').hidden = !isQuestion;
-    meter.style.transform = `scaleX(${Math.min(n, QUESTIONS + 1) / (QUESTIONS + 1)})`;
-    if (steps[n].querySelector('[data-price]')) limitPrices(n);
+    const q = steps[n].dataset.q;
+    // Back + progress only while answering (the concept card has Back but isn't counted);
+    // the intro and the final email step stand alone
+    nav.hidden = !(q || n === concept);
+    nav.querySelector('.survey__count').hidden = !q;
+    if (q) num.textContent = q;
+    meter.style.transform = `scaleX(${n / last})`;
+    if (steps[n].querySelector('[data-price]')) setupSlider(n);
     const heading = steps[n].querySelector('legend, .survey__q, .modal__title');
     if (heading) heading.focus({ preventScroll: true });
-    if (n === QUESTIONS + 1) form.email.focus();
+    if (n === last) form.email.focus();
   };
 
-  // A price answer can't be lower than the one before it (cheap → deal → expensive → too expensive)
-  const rankOf = (step) => {
-    const picked = step.querySelector('input:checked');
-    return picked ? Number(picked.dataset.rank) : 0;
-  };
-  const limitPrices = (n) => {
-    let min = 0;
+  // Price sliders: 1–8 = £X1–£X8, 9 = more than £X8 (placeholder prices for now).
+  // A price answer can't be lower than the one before it (cheap → deal → expensive → too expensive).
+  const label = (rank) => (rank >= 9 ? '£X8+' : `£X${rank}`);
+  const stored = (rank) => (rank >= 9 ? 'more than X8' : `X${rank}`);
+  const rankOf = (step) => Number(step.querySelector('.survey__range')?.dataset.chosen || 0);
+  const floorFor = (n) => {
+    let min = 1;
     for (let i = 2; i < n; i++) min = Math.max(min, rankOf(steps[i]));
-    steps[n].querySelectorAll('input').forEach((input) => {
-      input.disabled = Number(input.dataset.rank) < min;
-      if (input.disabled && input.checked) input.checked = false;
-    });
+    return min;
   };
+  const setRank = (step, rank) => {
+    const range = step.querySelector('.survey__range');
+    range.value = rank;
+    range.dataset.chosen = rank;
+    range.setAttribute('aria-valuetext', label(rank));
+    step.querySelector('.survey__value').textContent = label(rank);
+    step.querySelector('input[type="hidden"]').value = stored(rank);
+    step.querySelectorAll('.survey__scale span').forEach((s, i) => s.classList.toggle('is-below', i + 1 < Number(range.dataset.min)));
+  };
+  const setupSlider = (n) => {
+    const step = steps[n];
+    const range = step.querySelector('.survey__range');
+    const min = floorFor(n);
+    range.dataset.min = min;
+    // start where the previous answer left off (or keep this step's own answer if it's still valid)
+    setRank(step, Math.max(min, rankOf(step) || min));
+  };
+  form.querySelectorAll('.survey__range').forEach((range) => {
+    range.addEventListener('input', () => {
+      const step = range.closest('.survey__step');
+      setRank(step, Math.max(Number(range.dataset.min || 1), Number(range.value)));
+    });
+  });
 
-  const answered = (n) => !!steps[n].querySelector('input:checked');
+  const answered = (n) => !!steps[n].querySelector('input:checked') || !!steps[n].querySelector('[data-price]');
 
   // Tapping an answer moves on by itself; keyboard users pick with arrows and press Enter
   let pointerPick = false;
   form.addEventListener('pointerdown', (e) => { pointerPick = !!e.target.closest('.chip'); });
   form.addEventListener('change', (e) => {
     if (!e.target.matches('input[type="radio"]')) return;
-    if (pointerPick && current <= QUESTIONS) setTimeout(() => show(current + 1), 220);
+    if (pointerPick && steps[current].dataset.q) setTimeout(() => show(current + 1), 220);
     pointerPick = false;
   });
   form.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && e.target.matches('input[type="radio"]') && answered(current)) {
+    if (e.key === 'Enter' && e.target.matches('input[type="radio"], .survey__range') && answered(current)) {
       e.preventDefault();
       show(current + 1);
     }
   });
-  form.querySelector('[data-survey-next]').addEventListener('click', () => show(1));
+  form.querySelectorAll('[data-survey-next]').forEach((btn) => btn.addEventListener('click', () => show(current + 1)));
   form.querySelector('[data-survey-back]').addEventListener('click', () => show(Math.max(0, current - 1)));
+  form.querySelector('[data-survey-concept-done]').addEventListener('click', () => show(current + 1));
 
   document.addEventListener('click', (e) => {
     if (e.target.closest('[data-waitlist-open]')) {

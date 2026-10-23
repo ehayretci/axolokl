@@ -9,7 +9,7 @@
   <link rel="icon" href="assets/logo/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/urbanist-var.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/styles.css?v=30">
+  <link rel="stylesheet" href="css/styles.css?v=33">
   <script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
@@ -48,7 +48,7 @@
         <svg class="nav__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3.5 7 L12 13 L20.5 7"/></svg>
         <span class="nav__text">Contact</span>
       </a>
-      <a class="btn btn--small nav__cta" href="#waitlist" data-waitlist-open><span><span class="nav__cta-long">Take the survey</span><span class="nav__cta-short">Survey</span></span><span class="nav__chip">−25%</span></a>
+      <a class="btn btn--small nav__cta" href="#waitlist" data-waitlist-open><span><span class="nav__cta-long">Join the waitlist</span><span class="nav__cta-short">Join</span></span><span class="nav__chip">−25%</span></a>
     </nav>
   </header>
 
@@ -336,13 +336,12 @@
       <!-- 0. intro -->
       <div class="survey__step" data-step="0">
         <h2 id="modal-title" class="modal__title" tabindex="-1">Get 25% off at launch.</h2>
-        <p class="modal__text">Axolokl is a custom-coded axle lock for your front or rear wheel that only your own key can open.</p>
         <p class="modal__text">Answer 5 quick questions (about a minute) to join the waitlist. We’ll only ever send you one email: your <strong>25% code</strong> on launch day.</p>
         <button class="btn modal__submit" type="button" data-survey-next>Start the survey</button>
       </div>
 
       <!-- 1. warm-up -->
-      <fieldset class="survey__step" data-step="1" hidden>
+      <fieldset class="survey__step" data-step="1" data-q="1" hidden>
         <legend class="survey__q" tabindex="-1">Have you ever had a bike part stolen?</legend>
         <div class="survey__chips survey__chips--two">
           <label class="chip"><input type="radio" name="part_stolen" value="yes" required><span>Yes</span></label>
@@ -350,77 +349,87 @@
         </div>
       </fieldset>
 
-        <fieldset class="survey__step" data-step="2" hidden>
+      <!-- concept card: what they're pricing, shown once before the price questions (not a question) -->
+      <div class="survey__step survey__concept" data-step="concept" hidden>
+        <h2 class="survey__q" tabindex="-1">Here’s what we’re building.</h2>
+        <!-- line drawing: the coded lock on the wheel hub, and the one key that fits it -->
+        <svg class="survey__art" viewBox="0 0 320 150" aria-hidden="true" focusable="false">
+          <g class="art__wheel">
+            <path d="M88 4 A71 71 0 1 0 88 146"/>
+            <path d="M88 13 A62 62 0 1 0 88 137"/>
+            <path d="M88 75 L33 33 M88 75 L19 72 M88 75 L30 116 M88 75 L66 141 M88 75 L64 10"/>
+          </g>
+          <path class="art__fork" d="M150 2 L96 70"/>
+          <g class="art__lock">
+            <rect x="74" y="61" width="28" height="28" rx="7"/>
+            <circle cx="88" cy="72" r="3.2"/>
+            <path d="M88 75 L88 81"/>
+          </g>
+          <path class="art__guide" d="M120 75 H186"/>
+          <g class="art__key">
+            <circle cx="292" cy="75" r="15"/>
+            <circle cx="292" cy="75" r="5"/>
+            <path d="M277 75 H196 V83 H203 V79 H210 V86 H218 V80 H225 V84 H232 V79 H240 V75"/>
+          </g>
+        </svg>
+        <ul class="survey__points">
+          <li>Replaces the quick-release lever or bolt that holds your wheel on.</li>
+          <li>Every lock is custom-coded: only your own key fits, so a standard tool can’t open it.</li>
+        </ul>
+        <button class="btn modal__submit" type="button" data-survey-concept-done>Next</button>
+      </div>
+
+        <fieldset class="survey__step" data-step="2" data-q="2" hidden>
           <legend class="survey__q" tabindex="-1">At what price would it seem <em>so cheap</em> that you’d doubt it’s secure?</legend>
-          <p class="survey__hint">Price for one Axolokl (one wheel).</p>
-          <div class="survey__chips survey__chips--price" data-price>
-            <label class="chip"><input type="radio" name="price_too_cheap" value="X1" data-rank="1" required><span>£X1</span></label>
-            <label class="chip"><input type="radio" name="price_too_cheap" value="X2" data-rank="2" required><span>£X2</span></label>
-            <label class="chip"><input type="radio" name="price_too_cheap" value="X3" data-rank="3" required><span>£X3</span></label>
-            <label class="chip"><input type="radio" name="price_too_cheap" value="X4" data-rank="4" required><span>£X4</span></label>
-            <label class="chip"><input type="radio" name="price_too_cheap" value="X5" data-rank="5" required><span>£X5</span></label>
-            <label class="chip"><input type="radio" name="price_too_cheap" value="X6" data-rank="6" required><span>£X6</span></label>
-            <label class="chip"><input type="radio" name="price_too_cheap" value="X7" data-rank="7" required><span>£X7</span></label>
-            <label class="chip"><input type="radio" name="price_too_cheap" value="X8" data-rank="8" required><span>£X8</span></label>
-            <label class="chip chip--wide"><input type="radio" name="price_too_cheap" value="more than X8" data-rank="9" required><span>More than £X8</span></label>
+          <div class="survey__slider" data-price>
+            <output class="survey__value" aria-hidden="true">£X1</output>
+            <input class="survey__range" type="range" min="1" max="9" step="1" value="1" aria-label="Price">
+            <input type="hidden" name="price_too_cheap" value="">
+            <div class="survey__scale" aria-hidden="true"><span>£X1</span><span>£X2</span><span>£X3</span><span>£X4</span><span>£X5</span><span>£X6</span><span>£X7</span><span>£X8</span><span>£X8+</span></div>
           </div>
+          <button class="btn modal__submit" type="button" data-survey-next>Next</button>
         </fieldset>
 
-        <fieldset class="survey__step" data-step="3" hidden>
+        <fieldset class="survey__step" data-step="3" data-q="3" hidden>
           <legend class="survey__q" tabindex="-1">At what price would it feel like <em>a good deal</em>?</legend>
-          <p class="survey__hint">Price for one Axolokl (one wheel).</p>
-          <div class="survey__chips survey__chips--price" data-price>
-            <label class="chip"><input type="radio" name="price_good_deal" value="X1" data-rank="1" required><span>£X1</span></label>
-            <label class="chip"><input type="radio" name="price_good_deal" value="X2" data-rank="2" required><span>£X2</span></label>
-            <label class="chip"><input type="radio" name="price_good_deal" value="X3" data-rank="3" required><span>£X3</span></label>
-            <label class="chip"><input type="radio" name="price_good_deal" value="X4" data-rank="4" required><span>£X4</span></label>
-            <label class="chip"><input type="radio" name="price_good_deal" value="X5" data-rank="5" required><span>£X5</span></label>
-            <label class="chip"><input type="radio" name="price_good_deal" value="X6" data-rank="6" required><span>£X6</span></label>
-            <label class="chip"><input type="radio" name="price_good_deal" value="X7" data-rank="7" required><span>£X7</span></label>
-            <label class="chip"><input type="radio" name="price_good_deal" value="X8" data-rank="8" required><span>£X8</span></label>
-            <label class="chip chip--wide"><input type="radio" name="price_good_deal" value="more than X8" data-rank="9" required><span>More than £X8</span></label>
+          <div class="survey__slider" data-price>
+            <output class="survey__value" aria-hidden="true">£X1</output>
+            <input class="survey__range" type="range" min="1" max="9" step="1" value="1" aria-label="Price">
+            <input type="hidden" name="price_good_deal" value="">
+            <div class="survey__scale" aria-hidden="true"><span>£X1</span><span>£X2</span><span>£X3</span><span>£X4</span><span>£X5</span><span>£X6</span><span>£X7</span><span>£X8</span><span>£X8+</span></div>
           </div>
+          <button class="btn modal__submit" type="button" data-survey-next>Next</button>
         </fieldset>
 
-        <fieldset class="survey__step" data-step="4" hidden>
+        <fieldset class="survey__step" data-step="4" data-q="4" hidden>
           <legend class="survey__q" tabindex="-1">At what price would it start to feel <em>expensive</em>, but you’d still consider it?</legend>
-          <p class="survey__hint">Price for one Axolokl (one wheel).</p>
-          <div class="survey__chips survey__chips--price" data-price>
-            <label class="chip"><input type="radio" name="price_expensive" value="X1" data-rank="1" required><span>£X1</span></label>
-            <label class="chip"><input type="radio" name="price_expensive" value="X2" data-rank="2" required><span>£X2</span></label>
-            <label class="chip"><input type="radio" name="price_expensive" value="X3" data-rank="3" required><span>£X3</span></label>
-            <label class="chip"><input type="radio" name="price_expensive" value="X4" data-rank="4" required><span>£X4</span></label>
-            <label class="chip"><input type="radio" name="price_expensive" value="X5" data-rank="5" required><span>£X5</span></label>
-            <label class="chip"><input type="radio" name="price_expensive" value="X6" data-rank="6" required><span>£X6</span></label>
-            <label class="chip"><input type="radio" name="price_expensive" value="X7" data-rank="7" required><span>£X7</span></label>
-            <label class="chip"><input type="radio" name="price_expensive" value="X8" data-rank="8" required><span>£X8</span></label>
-            <label class="chip chip--wide"><input type="radio" name="price_expensive" value="more than X8" data-rank="9" required><span>More than £X8</span></label>
+          <div class="survey__slider" data-price>
+            <output class="survey__value" aria-hidden="true">£X1</output>
+            <input class="survey__range" type="range" min="1" max="9" step="1" value="1" aria-label="Price">
+            <input type="hidden" name="price_expensive" value="">
+            <div class="survey__scale" aria-hidden="true"><span>£X1</span><span>£X2</span><span>£X3</span><span>£X4</span><span>£X5</span><span>£X6</span><span>£X7</span><span>£X8</span><span>£X8+</span></div>
           </div>
+          <button class="btn modal__submit" type="button" data-survey-next>Next</button>
         </fieldset>
 
-        <fieldset class="survey__step" data-step="5" hidden>
+        <fieldset class="survey__step" data-step="5" data-q="5" hidden>
           <legend class="survey__q" tabindex="-1">At what price would it be <em>too expensive</em> to consider?</legend>
-          <p class="survey__hint">Price for one Axolokl (one wheel).</p>
-          <div class="survey__chips survey__chips--price" data-price>
-            <label class="chip"><input type="radio" name="price_too_expensive" value="X1" data-rank="1" required><span>£X1</span></label>
-            <label class="chip"><input type="radio" name="price_too_expensive" value="X2" data-rank="2" required><span>£X2</span></label>
-            <label class="chip"><input type="radio" name="price_too_expensive" value="X3" data-rank="3" required><span>£X3</span></label>
-            <label class="chip"><input type="radio" name="price_too_expensive" value="X4" data-rank="4" required><span>£X4</span></label>
-            <label class="chip"><input type="radio" name="price_too_expensive" value="X5" data-rank="5" required><span>£X5</span></label>
-            <label class="chip"><input type="radio" name="price_too_expensive" value="X6" data-rank="6" required><span>£X6</span></label>
-            <label class="chip"><input type="radio" name="price_too_expensive" value="X7" data-rank="7" required><span>£X7</span></label>
-            <label class="chip"><input type="radio" name="price_too_expensive" value="X8" data-rank="8" required><span>£X8</span></label>
-            <label class="chip chip--wide"><input type="radio" name="price_too_expensive" value="more than X8" data-rank="9" required><span>More than £X8</span></label>
+          <div class="survey__slider" data-price>
+            <output class="survey__value" aria-hidden="true">£X1</output>
+            <input class="survey__range" type="range" min="1" max="9" step="1" value="1" aria-label="Price">
+            <input type="hidden" name="price_too_expensive" value="">
+            <div class="survey__scale" aria-hidden="true"><span>£X1</span><span>£X2</span><span>£X3</span><span>£X4</span><span>£X5</span><span>£X6</span><span>£X7</span><span>£X8</span><span>£X8+</span></div>
           </div>
+          <button class="btn modal__submit" type="button" data-survey-next>Next</button>
         </fieldset>
 
       <!-- 6. email -->
       <div class="survey__step" data-step="6" hidden>
-        <h2 class="survey__q" tabindex="-1">Where should we send your 25% code?</h2>
-        <p class="modal__text">One email on launch day. Nothing else.</p>
+        <h2 class="survey__q" tabindex="-1">Thank you for taking our survey.</h2>
+        <p class="modal__text">Where should we send your 25% code?</p>
         <label class="visually-hidden" for="waitlist-email">Email address</label>
         <input class="modal__input" id="waitlist-email" type="email" name="email" placeholder="you@email.com" autocomplete="email" required>
-        <button class="btn modal__submit" type="submit">Get my 25% code</button>
+        <button class="btn modal__submit" type="submit">Join the waitlist</button>
         <p class="modal__error" role="alert" hidden>Something went wrong. Please try again in a moment.</p>
       </div>
 
@@ -441,6 +450,6 @@
 
   <script src="js/vendor/gsap.min.js" defer></script>
   <script src="js/vendor/ScrollTrigger.min.js" defer></script>
-  <script src="js/main.js?v=5" defer></script>
+  <script src="js/main.js?v=8" defer></script>
 </body>
 </html>
