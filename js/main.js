@@ -111,107 +111,46 @@ document.addEventListener('click', (e) => {
   requestAnimationFrame(() => requestAnimationFrame(tick));
 })();
 
-// ---- Survey + waitlist pop-up (Netlify Forms) ----
+// ---- Waitlist pop-up (Netlify Forms): email first, then one optional question ----
 (() => {
   const modal = document.getElementById('waitlist-modal');
   if (!modal) return;
-  const form = modal.querySelector('form');
+  const joinForm = modal.querySelector('.waitlist-form');
+  const useForm = modal.querySelector('.use-form');
   const done = modal.querySelector('.modal__done');
-  const error = modal.querySelector('.modal__error');
-  const submit = form.querySelector('button[type="submit"]');
-  const steps = [...form.querySelectorAll('.survey__step')];
-  const nav = form.querySelector('.survey__nav');
-  const num = form.querySelector('[data-survey-num]');
-  const meter = form.querySelector('.survey__meter span');
-  const concept = steps.findIndex((step) => step.classList.contains('survey__concept'));
-  const last = steps.length - 1;
-  let current = 0;
+  const error = joinForm.querySelector('.modal__error');
 
   // Where the visitor came from (QR / UTM tags on the landing URL). Kept for the session,
-  // so the tags survive if they browse before opening the survey.
-  const sourceField = form.querySelector('input[name="source"]');
+  // so the tags survive if they browse before opening the pop-up.
   let source = location.search.slice(1);
   try {
     if (source) sessionStorage.setItem('axolokl-source', source);
     else source = sessionStorage.getItem('axolokl-source') || '';
   } catch { /* storage blocked: use this page's tags only */ }
-  sourceField.value = source || 'direct';
+  modal.querySelectorAll('input[name="source"]').forEach((input) => { input.value = source || 'direct'; });
 
-  const show = (n) => {
-    current = n;
-    steps.forEach((step, i) => { step.hidden = i !== n; });
-    const q = steps[n].dataset.q;
-    // Back + progress only while answering (the concept card has Back but isn't counted);
-    // the intro and the final email step stand alone
-    nav.hidden = !(q || n === concept);
-    nav.querySelector('.survey__count').hidden = !q;
-    if (q) num.textContent = q;
-    meter.style.transform = `scaleX(${n / last})`;
-    if (steps[n].querySelector('[data-price]')) setupSlider(n);
-    const heading = steps[n].querySelector('legend, .survey__q, .modal__title');
-    if (heading) heading.focus({ preventScroll: true });
-    if (n === last) form.email.focus();
+  const isLocal = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
+  // Locally there is no Netlify to receive forms, so submissions are only logged
+  const post = async (form) => {
+    const data = new URLSearchParams(new FormData(form));
+    if (isLocal) { console.info('[form] mock submit', Object.fromEntries(data)); return; }
+    const res = await fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: data.toString() });
+    if (!res.ok) throw new Error(res.status);
   };
-
-  // Price sliders: 1–8 = £X1–£X8, 9 = more than £X8 (placeholder prices for now).
-  // A price answer can't be lower than the one before it (cheap → deal → expensive → too expensive).
-  const label = (rank) => (rank >= 9 ? '£X8+' : `£X${rank}`);
-  const stored = (rank) => (rank >= 9 ? 'more than X8' : `X${rank}`);
-  const rankOf = (step) => Number(step.querySelector('.survey__range')?.dataset.chosen || 0);
-  const floorFor = (n) => {
-    let min = 1;
-    for (let i = 2; i < n; i++) min = Math.max(min, rankOf(steps[i]));
-    return min;
+  const showOnly = (el) => {
+    [joinForm, useForm, done].forEach((x) => { x.hidden = x !== el; });
+    el.querySelector('.modal__title')?.focus();
   };
-  const setRank = (step, rank) => {
-    const range = step.querySelector('.survey__range');
-    range.value = rank;
-    range.dataset.chosen = rank;
-    range.setAttribute('aria-valuetext', label(rank));
-    step.querySelector('.survey__value').textContent = label(rank);
-    step.querySelector('input[type="hidden"]').value = stored(rank);
-    step.querySelectorAll('.survey__scale span').forEach((s, i) => s.classList.toggle('is-below', i + 1 < Number(range.dataset.min)));
+  const finish = () => {
+    done.querySelector('.modal__email').textContent = joinForm.email.value;
+    showOnly(done);
   };
-  const setupSlider = (n) => {
-    const step = steps[n];
-    const range = step.querySelector('.survey__range');
-    const min = floorFor(n);
-    range.dataset.min = min;
-    // start where the previous answer left off (or keep this step's own answer if it's still valid)
-    setRank(step, Math.max(min, rankOf(step) || min));
-  };
-  form.querySelectorAll('.survey__range').forEach((range) => {
-    range.addEventListener('input', () => {
-      const step = range.closest('.survey__step');
-      setRank(step, Math.max(Number(range.dataset.min || 1), Number(range.value)));
-    });
-  });
-
-  const answered = (n) => !!steps[n].querySelector('input:checked') || !!steps[n].querySelector('[data-price]');
-
-  // Tapping an answer moves on by itself; keyboard users pick with arrows and press Enter
-  let pointerPick = false;
-  form.addEventListener('pointerdown', (e) => { pointerPick = !!e.target.closest('.chip'); });
-  form.addEventListener('change', (e) => {
-    if (!e.target.matches('input[type="radio"]')) return;
-    if (pointerPick && steps[current].dataset.q) setTimeout(() => show(current + 1), 220);
-    pointerPick = false;
-  });
-  form.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && e.target.matches('input[type="radio"], .survey__range') && answered(current)) {
-      e.preventDefault();
-      show(current + 1);
-    }
-  });
-  form.querySelectorAll('[data-survey-next]').forEach((btn) => btn.addEventListener('click', () => show(current + 1)));
-  form.querySelector('[data-survey-back]').addEventListener('click', () => show(Math.max(0, current - 1)));
-  form.querySelector('[data-survey-concept-done]').addEventListener('click', () => show(current + 1));
 
   document.addEventListener('click', (e) => {
     if (e.target.closest('[data-waitlist-open]')) {
       e.preventDefault();
       modal.showModal();
-      if (!form.hidden) show(current);
+      if (!joinForm.hidden) joinForm.email.focus();
     } else if (e.target.closest('[data-waitlist-close]')) {
       modal.close();
     }
@@ -219,33 +158,108 @@ document.addEventListener('click', (e) => {
   // Click on the dimmed backdrop closes it
   modal.addEventListener('click', (e) => { if (e.target === modal) modal.close(); });
 
-  const isLocal = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
+  // 1. Join: the email is saved straight away, so nobody is lost if they skip the question
+  const joinBtn = joinForm.querySelector('button[type="submit"]');
+  const joinLabel = joinBtn.querySelector('.btn__label');
+  const wait = (ms) => new Promise((resolve) => { setTimeout(resolve, ms); });
 
-  form.addEventListener('submit', async (e) => {
+  // Confetti: a burst of muted brand-coloured flakes from behind the title that spreads
+  // across the whole screen, then falls and fades. Skipped when the visitor prefers reduced motion.
+  const canvas = modal.querySelector('.modal__confetti');
+  const confetti = () => {
+    if (!canvas || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const w = innerWidth, h = innerHeight;
+    canvas.width = w * dpr; canvas.height = h * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const title = useForm.querySelector('.modal__title').getBoundingClientRect();
+    const ox = title.left + title.width * 0.5, oy = title.top + title.height / 2;
+    const colours = ['#F4A9C0', '#F4A9C0', '#B8355E', '#E6E8EB', '#E6E8EB', '#6E757E'];
+    const flakes = Array.from({ length: 110 }, () => {
+      const angle = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI * 1.15; // mostly upwards, fanning out
+      const speed = 7 + Math.random() * 11;
+      return {
+        x: ox + (Math.random() - 0.5) * 80, y: oy,
+        vx: Math.cos(angle) * speed * 1.25, vy: Math.sin(angle) * speed,
+        w: 5 + Math.random() * 6, h: 2.5 + Math.random() * 2.5,
+        rot: Math.random() * Math.PI, spin: (Math.random() - 0.5) * 0.35,
+        sway: Math.random() * Math.PI * 2,
+        colour: colours[Math.floor(Math.random() * colours.length)],
+      };
+    });
+    const life = 2600;
+    const start = performance.now();
+    const frame = (now) => {
+      const t = (now - start) / life;
+      ctx.clearRect(0, 0, w, h);
+      if (t >= 1) return;
+      ctx.globalAlpha = t < 0.6 ? 0.95 : 0.95 * (1 - (t - 0.6) / 0.4);
+      flakes.forEach((f) => {
+        f.vy = Math.min(f.vy + 0.32, 6); // gravity, with a gentle terminal speed so they flutter down
+        f.vx *= 0.97;
+        f.sway += 0.08;
+        f.x += f.vx + Math.sin(f.sway) * 0.6;
+        f.y += f.vy;
+        f.rot += f.spin;
+        ctx.save();
+        ctx.translate(f.x, f.y); ctx.rotate(f.rot);
+        // flip the flake's width with its spin so it reads as a turning paper strip
+        ctx.scale(Math.cos(f.rot * 1.7), 1);
+        ctx.fillStyle = f.colour;
+        ctx.fillRect(-f.w / 2, -f.h / 2, f.w, f.h);
+        ctx.restore();
+      });
+      requestAnimationFrame(frame);
+    };
+    requestAnimationFrame(frame);
+  };
+  joinForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (!form.email.checkValidity()) { form.email.reportValidity(); return; }
+    if (!joinForm.email.checkValidity()) { joinForm.email.reportValidity(); return; }
     error.hidden = true;
-    submit.disabled = true;
+    joinBtn.disabled = true;
+    joinForm.email.readOnly = true;
+    joinBtn.classList.add('is-loading');
+    joinLabel.textContent = 'Joining the waitlist…';
     try {
-      // Locally there is no Netlify to receive the form, so the success state is mocked
-      if (!isLocal) {
-        const res = await fetch('/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams(new FormData(form)).toString(),
-        });
-        if (!res.ok) throw new Error(res.status);
-      } else {
-        console.info('[survey] mock submit', Object.fromEntries(new FormData(form)));
-      }
-      done.querySelector('.modal__email').textContent = form.email.value;
-      form.hidden = true;
-      done.hidden = false;
-      done.querySelector('.modal__title').focus();
+      // a short, deliberate pause so joining feels like it happened, not an instant jump
+      await Promise.all([post(joinForm), wait(2000)]);
+      useForm.email.value = joinForm.email.value;
+      showOnly(useForm);
+      confetti();
     } catch {
       error.hidden = false;
     } finally {
-      submit.disabled = false;
+      joinBtn.disabled = false;
+      joinForm.email.readOnly = false;
+      joinBtn.classList.remove('is-loading');
+      joinLabel.textContent = 'Join the waitlist';
     }
+  });
+
+  // 2. One last question: multiple choice, "Something else" opens a text line
+  const boxes = [...useForm.querySelectorAll('input[type="checkbox"]')];
+  const other = useForm.querySelector('[data-use-other]');
+  const otherText = useForm.querySelector('.use__other');
+  const sendBtn = useForm.querySelector('button[type="submit"]');
+  const refresh = () => {
+    otherText.hidden = !other.checked;
+    if (!other.checked) otherText.value = '';
+    useForm.uses.value = boxes.filter((b) => b.checked).map((b) => b.value).join(', ');
+    sendBtn.disabled = !useForm.uses.value;
+  };
+  useForm.addEventListener('change', (e) => {
+    if (!e.target.matches('input[type="checkbox"]')) return;
+    refresh();
+    if (e.target === other && other.checked) otherText.focus();
+  });
+  useForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    refresh();
+    if (!useForm.uses.value) return;
+    sendBtn.disabled = true;
+    try { await post(useForm); } catch { /* the email is already saved; don't block the thank-you */ }
+    finish();
   });
 })();
