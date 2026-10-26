@@ -1,0 +1,24 @@
+// Cloudflare Workers config for axolokl.co.uk. Deploy: `npx wrangler deploy` (or push to master once
+// Workers Builds is connected). Static files are this folder minus .assetsignore; worker.js handles
+// www -> apex and the two form endpoints.
+{
+  "name": "axolokl-site",
+  "main": "worker.js",
+  "compatibility_date": "2025-09-01",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [
+    { "pattern": "axolokl.co.uk", "custom_domain": true },
+    { "pattern": "www.axolokl.co.uk", "custom_domain": true }
+  ],
+  "assets": {
+    "directory": ".",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
+  },
+  // Shared with the flyer tracker (go.axolokl.co.uk); its /admin page lists the waitlist.
+  "d1_databases": [
+    { "binding": "DB", "database_name": "axolokl-flyers", "database_id": "98a76c4a-c64c-435b-811a-db8c8c89766c" }
+  ],
+  "observability": { "enabled": true }
+}

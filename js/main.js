@@ -111,7 +111,7 @@ document.addEventListener('click', (e) => {
   requestAnimationFrame(() => requestAnimationFrame(tick));
 })();
 
-// ---- Waitlist pop-up (Netlify Forms): email first, then one optional question ----
+// ---- Waitlist pop-up (saved by worker.js to D1): email first, then one optional question ----
 (() => {
   const modal = document.getElementById('waitlist-modal');
   if (!modal) return;
@@ -130,11 +130,12 @@ document.addEventListener('click', (e) => {
   modal.querySelectorAll('input[name="source"]').forEach((input) => { input.value = source || 'direct'; });
 
   const isLocal = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
-  // Locally there is no Netlify to receive forms, so submissions are only logged
+  // Forms POST to worker.js (/api/waitlist, /api/bike-use). dev-server.py has no API
+  // (it answers POST with 501), so locally the submit is only logged.
   const post = async (form) => {
     const data = new URLSearchParams(new FormData(form));
-    if (isLocal) { console.info('[form] mock submit', Object.fromEntries(data)); return; }
-    const res = await fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: data.toString() });
+    const res = await fetch(form.getAttribute('action'), { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: data.toString() });
+    if (isLocal && res.status === 501) { console.info('[form] mock submit', Object.fromEntries(data)); return; }
     if (!res.ok) throw new Error(res.status);
   };
   const showOnly = (el) => {

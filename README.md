@@ -16,13 +16,18 @@ Then open http://localhost:8000. Stop the server with Ctrl+C.
 
 `dev-server.py` is Python's built-in web server with caching turned off, so your changes show up on every reload.
 
-The site is designed for desktop for now (about 1440px wide). The waitlist form only saves emails once the site is deployed on Netlify; locally it just shows the success message.
+With `dev-server.py` the waitlist form only shows the success message. To run the real form API against a local database, use `npx wrangler dev` (Node 22+).
+
+## Hosting
+
+The site is a Cloudflare Worker (`wrangler.jsonc`, `worker.js`) on axolokl.co.uk. Pushing to `master` deploys it. Waitlist emails and answers are stored in Cloudflare D1 and shown at go.axolokl.co.uk/admin.
 
 ## Structure
 
 - `index.html`: the whole page (header, hero, problem space, launch section, waitlist pop-up)
 - `css/styles.css`: all styles; colours and type tokens are at the top in `:root`
 - `js/main.js`: hero load animation, sideways-scrolling problem panels, lock-dial countdown, waitlist pop-up
+- `worker.js`: www redirect and the waitlist form API (`/api/waitlist`, `/api/bike-use`)
 - `js/vendor/`: GSAP + ScrollTrigger
 - `assets/`: images, logo SVGs, self-hosted fonts (Archivo, Urbanist)
 

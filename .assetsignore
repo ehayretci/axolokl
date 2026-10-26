@@ -1,0 +1,14 @@
+# Files in the repo that are not served on the live site
+.git
+.claude
+.wrangler
+node_modules
+.DS_Store
+.assetsignore
+.gitignore
+CLAUDE.md
+PLAN.md
+README.md
+dev-server.py
+worker.js
+wrangler.jsonc

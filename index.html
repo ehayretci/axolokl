@@ -317,7 +317,7 @@
     </section>
   </main>
 
-  <!-- Waitlist pop-up. Netlify Forms stores submissions; nothing is emailed until launch. -->
+  <!-- Waitlist pop-up. worker.js saves submissions to Cloudflare D1; nothing is emailed until launch. -->
   <dialog class="modal" id="waitlist-modal" aria-labelledby="modal-title">
     <canvas class="modal__confetti" aria-hidden="true"></canvas>
     <div class="modal__bar">
@@ -327,9 +327,8 @@
       </button>
     </div>
 
-    <!-- 1. Waitlist: just the email. Netlify form "waitlist". -->
-    <form class="modal__form waitlist-form" name="waitlist" method="POST" data-netlify="true" netlify-honeypot="bot-field" novalidate>
-      <input type="hidden" name="form-name" value="waitlist">
+    <!-- 1. Waitlist: just the email. POSTs to /api/waitlist. -->
+    <form class="modal__form waitlist-form" name="waitlist" method="POST" action="/api/waitlist" novalidate>
       <!-- where the visitor came from: QR / UTM tags on the landing URL, filled in by main.js -->
       <input type="hidden" name="source" value="">
       <p class="visually-hidden"><label>Leave this empty <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
@@ -344,9 +343,8 @@
       <p class="modal__error" role="alert" hidden>Something went wrong. Please try again in a moment.</p>
     </form>
 
-    <!-- 2. One optional question after joining. Separate Netlify form "bike-use", linked by email. -->
-    <form class="modal__form use-form" name="bike-use" method="POST" data-netlify="true" netlify-honeypot="bot-field" novalidate hidden>
-      <input type="hidden" name="form-name" value="bike-use">
+    <!-- 2. One optional question after joining. POSTs to /api/bike-use, linked by email. -->
+    <form class="modal__form use-form" name="bike-use" method="POST" action="/api/bike-use" novalidate hidden>
       <input type="hidden" name="email" value="">
       <input type="hidden" name="source" value="">
       <input type="hidden" name="uses" value="">
@@ -380,6 +378,6 @@
 
   <script src="js/vendor/gsap.min.js" defer></script>
   <script src="js/vendor/ScrollTrigger.min.js" defer></script>
-  <script src="js/main.js?v=12" defer></script>
+  <script src="js/main.js?v=13" defer></script>
 </body>
 </html>
