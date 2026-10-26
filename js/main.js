@@ -286,3 +286,48 @@ document.addEventListener('click', (e) => {
     finish();
   });
 })();
+
+// ---- Click tracking: beacons to /api/event (worker.js → D1, shown at go.axolokl.co.uk/admin) ----
+// One random id per tab session (no cookie); the flyer code comes from the landing tags; the email is
+// attached once the visitor has joined, so admin can follow a flyer from scan to demo signup.
+(() => {
+  const modal = document.getElementById('waitlist-modal');
+  let session = '', source = '', email = '';
+  try {
+    session = sessionStorage.getItem('axolokl-session') || '';
+    if (!session) { session = crypto.randomUUID(); sessionStorage.setItem('axolokl-session', session); }
+    source = sessionStorage.getItem('axolokl-source') || '';
+  } catch { session = crypto.randomUUID?.() || String(Math.random()).slice(2); }
+  source = source || location.search.slice(1) || 'direct';
+
+  const track = (name, detail = '') => {
+    const data = new URLSearchParams({ name, detail, session, source, email, page: location.pathname });
+    try { navigator.sendBeacon('/api/event', data); } catch { /* tracking never blocks the page */ }
+  };
+  const where = (el) => (el.closest('.modal') ? 'popup' : el.closest('header') ? 'nav' : el.closest('.launch') ? 'launch' : 'page');
+  const step = () => {
+    const open = modal && [...modal.querySelectorAll('.modal__form, .modal__done')].find((x) => !x.hidden);
+    return !open ? '' : open.matches('.waitlist-form') ? 'email' : open.matches('.demo-form') ? 'demo'
+      : open.matches('.use-form') ? 'bike-use' : 'done';
+  };
+
+  track('visit');
+  document.addEventListener('click', (e) => {
+    const el = e.target.closest('a, button, input[type="checkbox"]');
+    if (!el) return;
+    const href = el.getAttribute('href') || '';
+    if (el.matches('[data-waitlist-open]')) track('open_waitlist', where(el));
+    else if (el.matches('[data-demo-pass]')) track('demo_pass');
+    else if (el.matches('input[name="demo_consent"]')) track(el.checked ? 'demo_consent_tick' : 'demo_consent_untick');
+    else if (href.includes('instagram.com')) track('instagram', where(el));
+    else if (href.startsWith('mailto:')) track('contact', where(el));
+    else if (href.includes('privacy')) track('privacy', where(el));
+  }, true);
+  document.addEventListener('submit', (e) => {
+    const form = e.target;
+    if (form.matches('.waitlist-form')) { email = form.email.value.trim().toLowerCase(); track('waitlist_submit'); }
+    else if (form.matches('.demo-form') && form.demo_consent.checked) track('demo_join');
+    else if (form.matches('.use-form')) track('bike_use_sent');
+  }, true);
+  modal?.addEventListener('close', () => track('close_waitlist', step()));
+})();

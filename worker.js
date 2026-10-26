@@ -3,11 +3,15 @@
 //   POST /api/waitlist  -> save the email (+ landing tags, flyer code) to D1
 //   POST /api/bike-use  -> add the optional bike-use answer to that email's row
 //   POST /api/demo      -> mark that email's row as joining the free demo team (with consent time)
+//   POST /api/event     -> log one click beacon from main.js (table `events`)
 //   www.axolokl.co.uk   -> 301 to axolokl.co.uk
 // The D1 database is shared with the flyer tracker (go.axolokl.co.uk), whose /admin shows these rows.
 
 const CODE_RE = /^[2-9A-HJKMNP-Z]{6}$/; // flyer codes, same alphabet as the tracker
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const EVENTS = new Set(['visit', 'open_waitlist', 'close_waitlist', 'waitlist_submit', 'demo_consent_tick',
+  'demo_consent_untick', 'demo_join', 'demo_pass', 'bike_use_sent', 'instagram', 'contact', 'privacy']);
+const BOT_RE = /bot|crawl|spider|slurp|preview|facebookexternalhit|whatsapp|telegram|discord|slack|embedly|curl|wget|python|headless|monitor/i;
 const USES = new Set(['work', 'uni', 'errands', 'leisure', 'fitness', 'deliveries', 'other']);
 
 export default {
@@ -23,6 +27,7 @@ export default {
         if (url.pathname === '/api/waitlist') return await waitlist(request, env);
         if (url.pathname === '/api/bike-use') return await bikeUse(request, env);
         if (url.pathname === '/api/demo') return await demo(request, env);
+        if (url.pathname === '/api/event') return await event(request, env);
         return json({ error: 'not_found' }, 404);
       } catch (err) {
         console.error(err);
@@ -83,6 +88,31 @@ async function demo(request, env) {
     "UPDATE waitlist SET demo_optin = 1, demo_consent_at = strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE email = ?"
   ).bind(email).run();
   return json({ ok: true });
+}
+
+// Click beacons from main.js. Bots and unknown event names are dropped; nothing here blocks the page.
+async function event(request, env) {
+  const ua = request.headers.get('user-agent') || '';
+  if (!ua || BOT_RE.test(ua)) return new Response(null, { status: 204 });
+  const { get } = await fields(request);
+  const name = get('name', 40);
+  const session = get('session', 64);
+  if (!EVENTS.has(name) || !/^[A-Za-z0-9-]{8,64}$/.test(session)) return new Response(null, { status: 204 });
+  const email = get('email', 254).toLowerCase();
+  const c = new URLSearchParams(get('source', 500)).get('c');
+  const flyer = c && CODE_RE.test(c.toUpperCase()) ? c.toUpperCase() : null;
+  await env.DB.prepare(
+    'INSERT INTO events (session, name, detail, page, flyer_code, email, device) VALUES (?, ?, ?, ?, ?, ?, ?)'
+  ).bind(session, name, get('detail', 40) || null, get('page', 100) || null, flyer,
+         EMAIL_RE.test(email) ? email : null, deviceOf(ua)).run();
+  return new Response(null, { status: 204 });
+}
+
+function deviceOf(ua) {
+  if (/iPhone|iPad|iPod/i.test(ua)) return 'iOS';
+  if (/Android/i.test(ua)) return 'Android';
+  if (/Macintosh|Windows|Linux|CrOS/i.test(ua)) return 'Desktop';
+  return 'Other';
 }
 
 function json(data, status = 200) {
