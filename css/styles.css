@@ -577,6 +577,8 @@ a { color: inherit; }
   font-size: var(--step-1); letter-spacing: -0.02em;
   color: var(--axo);
 }
+/* demo offer: keep "Want to try Axolokl for free?" on one line */
+.demo-form .use__lead { white-space: nowrap; font-size: min(var(--step-1), 1.4rem, 5.2vw); }
 .use__set { margin: 0.5rem 0 0; padding: 0; border: 0; min-width: 0; }
 .use__q { padding: 0; font-size: var(--step-0); font-weight: 600; color: var(--alu); }
 .use__q span { display: block; margin-top: 0.2rem; font-size: var(--step--1); font-weight: 450; color: var(--steel); }
@@ -607,7 +609,25 @@ a { color: inherit; }
 .check input:focus-visible + span { outline: 2px solid var(--axo); outline-offset: 2px; }
 .use__other { margin-top: 0.6rem; }
 .use__other[hidden] { display: none; }
-.use-form .modal__submit:disabled { opacity: .45; cursor: not-allowed; }
+.use-form .modal__submit:disabled,
+.demo-form .modal__submit:disabled { opacity: .45; cursor: not-allowed; }
+
+/* ---- Demo team offer ---- */
+.consent {
+  display: flex; gap: 0.75rem; align-items: flex-start;
+  margin-top: 1.25rem; padding: 0.85rem 0.95rem;
+  border: 1px solid rgb(230 232 235 / .2); border-radius: 0.8rem;
+  font-size: var(--step--1); line-height: 1.5; color: rgb(230 232 235 / .85);
+  cursor: pointer;
+}
+.consent:hover { border-color: var(--axo); }
+.consent input { flex: none; width: 1.05rem; height: 1.05rem; margin: 0.15rem 0 0; accent-color: var(--axo); cursor: pointer; }
+.link-btn {
+  display: block; margin: 0.9rem auto 0; padding: 0;
+  background: none; border: 0; font: inherit; font-size: var(--step--1);
+  color: var(--steel); text-decoration: underline; text-underline-offset: 0.2em; cursor: pointer;
+}
+.link-btn:hover { color: var(--alu); }
 
 /* ============ Privacy page ============ */
 .legal { max-width: 44rem; margin: 0 auto; padding: 3rem var(--gutter) 6rem; }

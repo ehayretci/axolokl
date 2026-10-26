@@ -111,12 +111,14 @@ document.addEventListener('click', (e) => {
   requestAnimationFrame(() => requestAnimationFrame(tick));
 })();
 
-// ---- Waitlist pop-up (saved by worker.js to D1): email first, then one optional question ----
+// ---- Waitlist pop-up (saved by worker.js to D1): email → demo-team offer → one optional question ----
 (() => {
   const modal = document.getElementById('waitlist-modal');
   if (!modal) return;
   const joinForm = modal.querySelector('.waitlist-form');
+  const demoForm = modal.querySelector('.demo-form');
   const useForm = modal.querySelector('.use-form');
+  let joinedDemo = false;
   const done = modal.querySelector('.modal__done');
   const error = joinForm.querySelector('.modal__error');
 
@@ -139,11 +141,14 @@ document.addEventListener('click', (e) => {
     if (!res.ok) throw new Error(res.status);
   };
   const showOnly = (el) => {
-    [joinForm, useForm, done].forEach((x) => { x.hidden = x !== el; });
+    [joinForm, demoForm, useForm, done].forEach((x) => { x.hidden = x !== el; });
     el.querySelector('.modal__title')?.focus();
   };
   const finish = () => {
-    done.querySelector('.modal__email').textContent = joinForm.email.value;
+    done.querySelectorAll('.modal__email').forEach((el) => { el.textContent = joinForm.email.value; });
+    done.querySelector('[data-done-title]').textContent = joinedDemo ? 'Welcome to the demo team.' : 'Thank you.';
+    done.querySelector('[data-done-waitlist]').hidden = joinedDemo;
+    done.querySelector('[data-done-demo]').hidden = !joinedDemo;
     showOnly(done);
   };
 
@@ -174,7 +179,7 @@ document.addEventListener('click', (e) => {
     const w = innerWidth, h = innerHeight;
     canvas.width = w * dpr; canvas.height = h * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const title = useForm.querySelector('.modal__title').getBoundingClientRect();
+    const title = demoForm.querySelector('.modal__title').getBoundingClientRect();
     const ox = title.left + title.width * 0.5, oy = title.top + title.height / 2;
     const colours = ['#F4A9C0', '#F4A9C0', '#B8355E', '#E6E8EB', '#E6E8EB', '#6E757E'];
     const flakes = Array.from({ length: 110 }, () => {
@@ -226,8 +231,9 @@ document.addEventListener('click', (e) => {
     try {
       // a short, deliberate pause so joining feels like it happened, not an instant jump
       await Promise.all([post(joinForm), wait(2000)]);
+      demoForm.email.value = joinForm.email.value;
       useForm.email.value = joinForm.email.value;
-      showOnly(useForm);
+      showOnly(demoForm);
       confetti();
     } catch {
       error.hidden = false;
@@ -239,7 +245,23 @@ document.addEventListener('click', (e) => {
     }
   });
 
-  // 2. One last question: multiple choice, "Something else" opens a text line
+  // 2. Demo team: the button only unlocks once they've ticked the consent box; "I'll pass" moves on
+  const demoBox = demoForm.querySelector('input[name="demo_consent"]');
+  const demoBtn = demoForm.querySelector('button[type="submit"]');
+  demoBox.addEventListener('change', () => { demoBtn.disabled = !demoBox.checked; });
+  demoForm.querySelector('[data-demo-pass]').addEventListener('click', () => showOnly(useForm));
+  demoForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!demoBox.checked) return;
+    demoBtn.disabled = true;
+    try {
+      await post(demoForm);
+      joinedDemo = true;
+    } catch { /* the email is already saved; don't block the rest */ }
+    showOnly(useForm);
+  });
+
+  // 3. One last question: multiple choice, "Something else" opens a text line
   const boxes = [...useForm.querySelectorAll('input[type="checkbox"]')];
   const other = useForm.querySelector('[data-use-other]');
   const otherText = useForm.querySelector('.use__other');

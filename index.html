@@ -9,7 +9,7 @@
   <link rel="icon" href="assets/logo/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/urbanist-var.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/styles.css?v=41">
+  <link rel="stylesheet" href="css/styles.css?v=42">
   <script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
@@ -343,15 +343,30 @@
       <p class="modal__error" role="alert" hidden>Something went wrong. Please try again in a moment.</p>
     </form>
 
-    <!-- 2. One optional question after joining. POSTs to /api/bike-use, linked by email. -->
+    <!-- 2. Demo team offer right after joining (confetti here). POSTs to /api/demo, linked by email. -->
+    <form class="modal__form demo-form" name="demo" method="POST" action="/api/demo" novalidate hidden>
+      <input type="hidden" name="email" value="">
+      <p class="visually-hidden"><label>Leave this empty <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+
+      <h2 class="modal__title" tabindex="-1">You’re on the list!</h2>
+      <p class="use__lead">Want to try Axolokl for free?</p>
+      <p class="modal__text">Join our demo team: we’ll give you an Axolokl for free, in return for your honest feedback.</p>
+      <label class="consent">
+        <input type="checkbox" name="demo_consent" value="yes">
+        <span>I agree that the Axolokl team can contact me by email to arrange delivery and to ask for my feedback on the product.</span>
+      </label>
+      <button class="btn modal__submit" type="submit" disabled>Join the demo</button>
+      <button class="link-btn demo__pass" type="button" data-demo-pass>I’ll pass</button>
+    </form>
+
+    <!-- 3. One optional question. POSTs to /api/bike-use, linked by email. -->
     <form class="modal__form use-form" name="bike-use" method="POST" action="/api/bike-use" novalidate hidden>
       <input type="hidden" name="email" value="">
       <input type="hidden" name="source" value="">
       <input type="hidden" name="uses" value="">
       <p class="visually-hidden"><label>Leave this empty <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
 
-      <h2 class="modal__title" tabindex="-1">You’re on the list!</h2>
-      <p class="use__lead">One last thing…</p>
+      <h2 class="modal__title" tabindex="-1">One last thing…</h2>
       <fieldset class="use__set">
         <legend class="use__q">What do you mostly use your bike for? <span>Pick all that apply.</span></legend>
         <div class="use__options">
@@ -370,14 +385,15 @@
     </form>
 
     <div class="modal__done" hidden>
-      <h2 class="modal__title" tabindex="-1">Thank you.</h2>
-      <p class="modal__text">We’ll email <strong class="modal__email"></strong> once we launch.</p>
+      <h2 class="modal__title" tabindex="-1" data-done-title>Thank you.</h2>
+      <p class="modal__text" data-done-waitlist>We’ll email <strong class="modal__email"></strong> once we launch.</p>
+      <p class="modal__text" data-done-demo hidden>We’ll email <strong class="modal__email"></strong> soon to arrange delivery of your free product.</p>
       <button class="btn" type="button" data-waitlist-close>Done</button>
     </div>
   </dialog>
 
   <script src="js/vendor/gsap.min.js" defer></script>
   <script src="js/vendor/ScrollTrigger.min.js" defer></script>
-  <script src="js/main.js?v=13" defer></script>
+  <script src="js/main.js?v=14" defer></script>
 </body>
 </html>
