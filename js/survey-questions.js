@@ -8,7 +8,7 @@
 //   go: where each answer leads (by option), else the next question in the list
 //   optional: can be skipped
 //   pics: {option: [sketch, one-line hint]} shows options as picture cards (sketches in assets/img/axle-*.svg)
-//   suggest: 'countries' = type-ahead from js/countries.js, saved as the standard country name
+//   suggest: 'countries' | 'uk_places' = type-ahead from js/countries.js / js/uk-places.js, saved as the standard name
 window.AXO_SURVEY = (() => {
   const SECTIONS = {
     uk: { title: 'Living in the UK' },
@@ -34,7 +34,7 @@ window.AXO_SURVEY = (() => {
       options: ['At school or college', 'At university', 'Employed', 'Self-employed', 'Not working', 'Retired'] },
     { id: 'q4', type: 'one', title: 'Do you live in the UK?', options: ['Yes', 'No'], go: { Yes: 'q5', No: 'q7' } },
 
-    { id: 'q5', section: 'uk', type: 'text', title: 'Which town or city do you live in?' },
+    { id: 'q5', section: 'uk', type: 'text', suggest: 'uk_places', title: 'Which town or city do you live in?' },
     { id: 'q6', section: 'uk', type: 'one', title: 'How many bikes do you have in the UK?', options: BIKES,
       go: { 0: 'q9', '*': 'q11' } },
 

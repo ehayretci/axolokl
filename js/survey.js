@@ -170,7 +170,7 @@
       input.value = st.answers[q.id] || '';
       input.addEventListener('input', () => { st.answers[q.id] = input.value; typed(); nextLabel(); });
       body.append(input);
-      if (q.suggest === 'countries' && window.AXO_COUNTRIES) suggestCountries(q, input, body);
+      if (q.suggest && SOURCES[q.suggest]?.()) suggest(q, input, body);
     }
     nextLabel();
     show('sv-q'); progress();
@@ -178,26 +178,33 @@
     if (text && matchMedia('(hover: hover)').matches) text.focus(); else $('#sv-title').focus({ preventScroll: true });
   }
 
-  // ---------- country type-ahead ----------
-  const fold = (s) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
-  function countryOf(text) { // exact name or alias -> the standard name
-    const t = fold(text), C = window.AXO_COUNTRIES;
+  // ---------- type-ahead (countries, UK towns) ----------
+  const SOURCES = { countries: () => window.AXO_COUNTRIES, uk_places: () => window.AXO_UK_PLACES };
+  const PLACEHOLDER = { countries: 'Start typing a country', uk_places: 'Start typing a town or city' };
+  const fold = (s) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/['’.]/g, '').toLowerCase().trim();
+  const titleCase = (s) => s.replace(/(^|[\s-])\w/g, (c) => c.toUpperCase()).replace(/ (Upon|And|The|Of|On) /g, (w) => w.toLowerCase());
+  function standardName(kind, text) { // exact name or alias -> the standard name
+    const t = fold(text), C = SOURCES[kind]?.();
     if (!t || !C) return null;
     return C.NAMES.find((n) => fold(n) === t) || Object.entries(C.ALIASES).find(([a]) => fold(a) === t)?.[1] || null;
   }
-  function countryMatches(text) {
-    const t = fold(text), C = window.AXO_COUNTRIES, out = [];
+  function matches(kind, text) { // -> [{ value, label }], best first
+    const t = fold(text), C = SOURCES[kind](), out = [];
     if (!t) return out;
-    const add = (n) => { if (!out.includes(n)) out.push(n); };
-    for (const [a, n] of Object.entries(C.ALIASES)) if (fold(a) === t) add(n);
+    const add = (value, alias) => {
+      const label = alias && C.showAlias?.includes(value) ? `${value} (${titleCase(alias)})` : value;
+      if (!out.some((o) => fold(o.label) === fold(label) || (!alias && o.value === value))) out.push({ value, label });
+    };
+    for (const [a, n] of Object.entries(C.ALIASES)) if (fold(a) === t) add(n, a);
     for (const n of C.NAMES) if (fold(n).startsWith(t)) add(n);
     for (const n of C.NAMES) if (fold(n).split(/[\s-]+/).some((w) => w.startsWith(t))) add(n);
-    if (t.length >= 2) for (const [a, n] of Object.entries(C.ALIASES)) if (fold(a).startsWith(t)) add(n);
+    if (t.length >= 2) for (const [a, n] of Object.entries(C.ALIASES)) if (fold(a).startsWith(t)) add(n, a);
     if (t.length >= 3) for (const n of C.NAMES) if (fold(n).includes(t)) add(n);
     return out.slice(0, 6);
   }
-  function suggestCountries(q, input, body) {
-    input.autocomplete = 'off'; input.placeholder = 'Start typing a country';
+  function suggest(q, input, body) {
+    const kind = q.suggest;
+    input.autocomplete = 'off'; input.placeholder = PLACEHOLDER[kind] || '';
     input.setAttribute('role', 'combobox'); input.setAttribute('aria-autocomplete', 'list');
     input.setAttribute('aria-controls', 'sv-suggest'); input.setAttribute('aria-expanded', 'false');
     const list = document.createElement('div');
@@ -205,16 +212,16 @@
     body.append(list);
     let items = [], hi = -1;
     const draw = () => {
-      items = countryOf(input.value) === input.value ? [] : countryMatches(input.value);
+      items = standardName(kind, input.value) === input.value ? [] : matches(kind, input.value);
       if (hi >= items.length) hi = -1;
       list.innerHTML = '';
-      items.forEach((n, i) => {
+      items.forEach((it, i) => {
         const b = document.createElement('button');
         b.type = 'button'; b.className = 'sv-opt sv-suggest__opt'; b.id = `sv-sug-${i}`;
         b.setAttribute('role', 'option'); b.setAttribute('aria-selected', i === hi ? 'true' : 'false');
-        b.textContent = n;
+        b.textContent = it.label;
         b.addEventListener('mousedown', (e) => e.preventDefault()); // keep the keyboard open on phones
-        b.addEventListener('click', () => choose(n));
+        b.addEventListener('click', () => choose(it.value));
         list.append(b);
       });
       input.setAttribute('aria-expanded', items.length ? 'true' : 'false');
@@ -226,7 +233,7 @@
       if (!items.length) return;
       if (e.key === 'ArrowDown') { e.preventDefault(); hi = (hi + 1) % items.length; draw(); }
       else if (e.key === 'ArrowUp') { e.preventDefault(); hi = hi <= 0 ? items.length - 1 : hi - 1; draw(); }
-      else if (e.key === 'Enter') { e.preventDefault(); choose(items[hi >= 0 ? hi : 0]); }
+      else if (e.key === 'Enter') { e.preventDefault(); choose(items[hi >= 0 ? hi : 0].value); }
       else if (e.key === 'Escape') { items = []; list.innerHTML = ''; input.setAttribute('aria-expanded', 'false'); }
     });
     draw();
@@ -286,7 +293,7 @@
   async function advance() {
     clearTimeout(advanceTimer);
     const q = cur();
-    if (q.suggest === 'countries') { const c = countryOf(st.answers[q.id] || ''); if (c) st.answers[q.id] = c; } // "usa" -> United States
+    if (q.suggest) { const c = standardName(q.suggest, st.answers[q.id] || ''); if (c) st.answers[q.id] = c; } // "usa" -> United States, "hackney" -> London
     const err = problem(q);
     if (err) { $('#sv-error').textContent = err; $('#sv-error').hidden = false; return; }
     const to = S.next(q, st.answers);
