@@ -44,7 +44,7 @@ window.AXO_SURVEY = (() => {
     { id: 'q7', section: 'abroad', type: 'text', suggest: 'countries', title: 'Which country do you live in?',
       // said "not in the UK" but then picked the UK: correct q4 and send them to the UK questions
       redirect: { 'United Kingdom': { set: { q4: 'Yes' }, to: 'q5',
-        message: "You picked the United Kingdom, so we've switched you to the questions for people living in the UK." } } },
+        message: 'You selected the United Kingdom as your country of residence. Your answer to "Do you live in the UK?" has been updated to Yes, and the following questions are for UK residents.' } } },
     { id: 'q8', section: 'abroad', type: 'one', title: 'How many bikes do you have where you live?', options: BIKES,
       go: { 0: 'q10', '*': 'q11' } },
 
