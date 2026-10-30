@@ -115,7 +115,8 @@
     const q = cur();
     const sec = q.section ? S.SECTIONS[q.section] : null;
     $('#sv-section').textContent = sec ? sec.title : 'About you';
-    $('#sv-section-note').hidden = !sec?.note; $('#sv-section-note').textContent = sec?.note || '';
+    const secNote = typeof sec?.note === 'function' ? sec.note(st.path) : sec?.note;
+    $('#sv-section-note').hidden = !secNote; $('#sv-section-note').textContent = secNote || '';
     $('#sv-title').textContent = q.title;
     $('#sv-note').hidden = !q.note; $('#sv-note').textContent = q.note || '';
     const hint = q.type === 'many' ? (q.max ? `Pick up to ${q.max === 3 ? 'three' : q.max}.` : 'Tick all that apply.')

@@ -14,7 +14,9 @@ window.AXO_SURVEY = (() => {
     uk: { title: 'Living in the UK' },
     abroad: { title: 'Living elsewhere' },
     nobike: { title: 'No bike at the moment' },
-    bike: { title: 'Your bike', note: 'Answer about the bike you ride most, or the last one you had.' },
+    // people with no bike now reach this section through q9/q10 ("had one in the last 3 years")
+    bike: { title: 'Your bike', note: (path) => path.includes('q9') || path.includes('q10')
+      ? 'Answer about the bike you last had.' : 'Answer about the bike you ride most.' },
     secure: { title: 'Securing your bike' },
     worry: { title: 'Worry and theft' },
     theft: { title: 'What happened' },
