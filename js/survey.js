@@ -27,13 +27,32 @@
   let flag = null; // one-off notice shown on the next screen (after a redirect)
 
   // ---------- saving ----------
-  // only the answers on the path actually taken (going back and changing a branch drops the old branch)
+  // Which questions count: start at q1 and follow the branching with the current answers, as far as they go.
+  // Going back and changing an early answer keeps everything after it; switching branch (e.g. UK -> abroad)
+  // drops only the answers on the branch they left. Optional questions count as passed once seen past them.
+  function answered(q) {
+    if (q.type === 'grid') return q.rows.every(([k]) => st.answers[k]);
+    const a = st.answers[q.id];
+    return Array.isArray(a) ? a.length > 0 : !!(a && String(a).trim());
+  }
+  function chain() {
+    const seen = new Set([...(st.seen || []), ...st.path]), out = [];
+    let id = S.first;
+    while (id && !out.includes(id)) {
+      const q = S.byId[id];
+      out.push(id);
+      const to = S.next(q, st.answers);
+      if (!(answered(q) || (q.optional && seen.has(to)))) break;   // first unanswered question: stop here
+      id = to;
+    }
+    return out;
+  }
   function payload(done) {
-    const on = new Set(st.path);
+    const path = chain(), on = new Set(path);
     const hasOther = (id) => { const o = otherOf(S.byId[id]); return !!o && (st.answers[id] === o || listOf(id).includes(o)); };
     const answers = Object.fromEntries(Object.entries(st.answers).filter(([k]) => on.has(k.match(/^q\d+/)[0])
       && (!k.endsWith('_other') || hasOther(k.slice(0, -6)))));
-    return JSON.stringify({ id: st.id, seq: st.seq, answers, path: st.path, last_q: st.path[st.path.length - 1] || null, done: !!done, source: st.source });
+    return JSON.stringify({ id: st.id, seq: st.seq, answers, path, last_q: st.path[st.path.length - 1] || null, done: !!done, source: st.source });
   }
   async function send(done) {
     const seq = st.seq;
@@ -306,12 +325,12 @@
     if (jump) {
       Object.assign(st.answers, jump.set || {});
       delete st.answers[q.id];
-      st.path.pop(); st.path.push(jump.to);
+      st.path.pop(); st.path.push(jump.to); st.seen = [...new Set([...(st.seen || []), jump.to])];
       flag = jump.message;
       persist(); save(); render(); return;
     }
     const to = S.next(q, st.answers);
-    if (to) { st.path.push(to); persist(); save(); render(); return; }
+    if (to) { st.path.push(to); st.seen = [...new Set([...(st.seen || []), to])]; persist(); save(); render(); return; }
     await finish();
   }
 
