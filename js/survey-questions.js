@@ -7,7 +7,7 @@
 //   none: an option that clears the others when ticked ("None of these")
 //   go: where each answer leads (by option), else the next question in the list
 //   optional: can be skipped
-//   pics: {option: [sketch, one-line hint]} shows options as picture cards (sketches in assets/img/axle-*.svg)
+//   pics: {option: [picture, one-line hint]} shows options as picture cards (assets/img/axle-*.svg)
 //   suggest: 'countries' | 'uk_places' = type-ahead from js/countries.js / js/uk-places.js, saved as the standard name
 window.AXO_SURVEY = (() => {
   const SECTIONS = {
@@ -59,10 +59,10 @@ window.AXO_SURVEY = (() => {
     { id: 'q15', section: 'bike', type: 'one', title: 'How are your bike wheels held on?',
       options: ['Quick release', 'Thru axle', 'Bolt-on', 'Locking axle', 'Not sure'],
       pics: {
-        'Quick release': ['assets/img/axle-quick-release.svg', 'A lever you flip open, no tools'],
-        'Thru axle': ['assets/img/axle-thru-axle.svg', 'A thick axle, with a lever or a bolt'],
-        'Bolt-on': ['assets/img/axle-bolt-on.svg', 'Nuts on each side, needs a spanner'],
-        'Locking axle': ['assets/img/axle-locking-axle.svg', 'Needs its own special key'],
+        'Quick release': ['assets/img/axle-quick-release.svg?v=2', 'A lever you flip open, no tools'],
+        'Thru axle': ['assets/img/axle-thru-axle.svg?v=2', 'A thick axle, with a lever or a bolt'],
+        'Bolt-on': ['assets/img/axle-bolt-on.svg?v=2', 'Nuts on each side, needs a spanner'],
+        'Locking axle': ['assets/img/axle-locking-axle.svg?v=2', 'Needs its own special key'],
       } },
     { id: 'q16', section: 'bike', type: 'many', title: "When you're out, where do you leave your bike?", other: true,
       options: ['On the street (stand, railing or post)', 'Secure parking (locked room, cage or cycle hub)', 'A train station bike park', 'I keep it with me'] },
