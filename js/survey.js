@@ -104,7 +104,7 @@
   const cur = () => S.byId[st.path[st.path.length - 1]];
   const listOf = (id) => (Array.isArray(st.answers[id]) ? st.answers[id] : []);
 
-  function optButton(label, role, checked, i, pic) {
+  function optButton(label, role, checked, i, pic, shown) {
     const b = document.createElement('button');
     b.type = 'button'; b.className = pic ? 'sv-opt sv-opt--pic' : 'sv-opt'; b.setAttribute('role', role);
     b.setAttribute('aria-checked', checked ? 'true' : 'false');
@@ -113,7 +113,7 @@
       ? `<span class="sv-opt__img"><img src="${pic[0]}" alt="" width="240" height="200" loading="lazy"></span>
          <span class="sv-opt__row"><span class="sv-mark" aria-hidden="true"></span><span><span class="sv-opt__label"></span><span class="sv-opt__hint"></span></span>${key}</span>`
       : `<span class="sv-mark" aria-hidden="true"></span><span class="sv-opt__label"></span>${key}`;
-    b.querySelector('.sv-opt__label').textContent = label;
+    b.querySelector('.sv-opt__label').textContent = shown || label;   // shown = past-tense wording, label = saved value
     if (pic) b.querySelector('.sv-opt__hint').textContent = pic[1];
     b.dataset.value = label;
     return b;
@@ -135,8 +135,10 @@
     const secNote = typeof sec?.note === 'function' ? sec.note(st.path) : sec?.note;
     $('#sv-section-note').hidden = !secNote; $('#sv-section-note').textContent = secNote || '';
     $('#sv-flag').hidden = !flag; $('#sv-flag').textContent = flag || ''; flag = null;
-    $('#sv-title').textContent = q.title;
-    $('#sv-note').hidden = !q.note; $('#sv-note').textContent = q.note || '';
+    const P = S.noBikeNow(st.path) ? S.PAST[q.id] || {} : {};   // past tense for people with no bike now
+    const note = 'note' in P ? P.note : q.note;
+    $('#sv-title').textContent = P.title || q.title;
+    $('#sv-note').hidden = !note; $('#sv-note').textContent = note || '';
     const hint = q.type === 'many' ? (q.max ? `Pick up to ${q.max === 3 ? 'three' : q.max}.` : 'Tick all that apply.')
       : q.type === 'grid' ? 'One answer per row.' : q.optional ? 'Optional.' : '';
     $('#sv-hint').hidden = !hint; $('#sv-hint').textContent = hint;
@@ -151,7 +153,7 @@
     if (q.type === 'one') {
       body.setAttribute('role', 'radiogroup');
       opts.forEach((o, i) => {
-        const b = optButton(o, 'radio', st.answers[q.id] === o, i, q.pics?.[o]);
+        const b = optButton(o, 'radio', st.answers[q.id] === o, i, q.pics?.[o], P.options?.[o]);
         b.addEventListener('click', () => pickOne(q, o));
         body.append(b);
       });
@@ -161,7 +163,7 @@
       const list = listOf(q.id);
       const full = q.max && list.length >= q.max;
       opts.forEach((o) => {
-        const b = optButton(o, 'checkbox', list.includes(o));
+        const b = optButton(o, 'checkbox', list.includes(o), null, null, P.options?.[o]);
         if (full && !list.includes(o)) b.disabled = true;
         b.addEventListener('click', () => toggle(q, o));
         body.append(b);

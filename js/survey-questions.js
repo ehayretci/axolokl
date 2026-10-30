@@ -16,7 +16,7 @@ window.AXO_SURVEY = (() => {
     abroad: { title: 'Living elsewhere' },
     nobike: { title: 'No bike at the moment' },
     // people with no bike now reach this section through q9/q10 ("had one in the last 3 years")
-    bike: { title: 'Your bike', note: (path) => path.includes('q9') || path.includes('q10')
+    bike: { title: 'Your bike', note: (path) => noBikeNow(path)
       ? 'Answer about the bike you last had.' : 'Answer about the bike you ride most.' },
     secure: { title: 'Securing your bike' },
     worry: { title: 'Worry and theft' },
@@ -119,6 +119,27 @@ window.AXO_SURVEY = (() => {
       note: "We'll only use it to arrange the interview and will delete it by April 2027." },
   ];
 
+  // People with no bike now (0 bikes, but had one in the last 3 years: they came through q9/q10) see the
+  // bike, security and worry questions in the past tense. Answers are saved under the usual option names
+  // (the keys below), so they're counted together with everyone else's.
+  const noBikeNow = (path) => path.includes('q9') || path.includes('q10');
+  const PAST = {
+    q11: { title: 'How often did you typically use your bike?', note: 'Think about the last 12 months that you had it.' },
+    q12: { title: 'What did you mostly use your bike for?' },
+    q13: { title: 'What kind of bike was it?' },
+    q14: { title: 'Roughly how much would a bike like the one you had cost to buy new today?' },
+    q15: { title: 'How were your bike wheels held on?' },
+    q16: { title: 'When you were out, where did you leave your bike?', options: { 'I keep it with me': 'I kept it with me' } },
+    q17: { title: 'On a typical day, what was the longest you left it in one place?', options: { 'I never leave it parked': 'I never left it parked' } },
+    q18: { title: 'Which type of locks did you typically use when you locked your bike up?', options: { "I don't use a lock": "I didn't use a lock" } },
+    q19: { title: 'Did you have any other security equipment on your bike?' },
+    q20: { title: 'Roughly how much did the security you used cost in total?',
+      note: 'Locks, chains, trackers, locking axles and so on, for the bikes you had.', options: { "Nothing, I don't use any": "Nothing, I didn't use any" } },
+    q21: { title: 'Which of these mattered most to you when you left your bike?' },
+    q22: { title: 'What frustrated you about how you secured your bike?' },
+    q23: { title: 'When you left your bike, how worried were you about' },
+  };
+
   const byId = Object.fromEntries(Q.map((q) => [q.id, q]));
   // The question after q, given the answers so far (null = the end)
   function next(q, answers) {
@@ -130,5 +151,5 @@ window.AXO_SURVEY = (() => {
     const i = Q.indexOf(q);
     return Q[i + 1] ? Q[i + 1].id : null;
   }
-  return { SECTIONS, QUESTIONS: Q, byId, next, first: 'q1' };
+  return { SECTIONS, QUESTIONS: Q, byId, next, first: 'q1', PAST, noBikeNow };
 })();
