@@ -3,7 +3,7 @@
 // option order and branching live in one place. Keys q1..q30 match the Google Form's question numbers.
 //
 //   type: one (pick one) | many (tick all, `max` = pick up to N) | text | long | email | grid (one per row)
-//   other: adds an "Other:" option with a text box, saved as qN_other
+//   other: true adds an "Other:" option with a text box, saved as qN_other; other: 'Label' gives that existing option the text box
 //   none: an option that clears the others when ticked ("None of these")
 //   go: where each answer leads (by option), else the next question in the list
 //   optional: can be skipped
@@ -51,7 +51,8 @@ window.AXO_SURVEY = (() => {
       note: 'Think about the last 12 months as a whole.',
       options: ['Most days', 'Every week', 'Every month', 'Several times a year', 'Less than once a year', 'Never'] },
     { id: 'q12', section: 'bike', type: 'one', title: 'What do you mostly use your bike for?',
-      options: ['Getting to work', 'Getting to uni or college', 'Errands or shopping', 'Leisure or socialising', 'Fitness or sport', 'Deliveries or other work', 'Something else'] },
+      options: ['Getting to work', 'Getting to uni or college', 'Errands or shopping', 'Leisure or socialising', 'Fitness or sport', 'Deliveries or other work', 'Something else'],
+      other: 'Something else' },
     { id: 'q13', section: 'bike', type: 'one', title: 'What kind of bike is it?', other: true,
       options: ['Road or gravel', 'Mountain', 'Hybrid or city', 'Folding', 'Cargo', 'Electric (any type)'] },
     { id: 'q14', section: 'bike', type: 'one', title: 'Roughly how much would a bike like yours cost to buy new today?',

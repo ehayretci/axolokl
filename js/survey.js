@@ -7,6 +7,9 @@
   const $ = (s) => document.querySelector(s);
   const KEY = 'axolokl-survey';
   const OTHER = 'Other';
+  // the option that opens a text box: an added "Other", or one of the question's own options (other: 'Something else')
+  const otherOf = (q) => (q?.other === true ? OTHER : q?.other || null);
+  const allOpts = (q) => [...q.options, ...(q.other === true ? [OTHER] : [])];
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY)); } catch { return null; } };
@@ -26,7 +29,7 @@
   // only the answers on the path actually taken (going back and changing a branch drops the old branch)
   function payload(done) {
     const on = new Set(st.path);
-    const hasOther = (id) => st.answers[id] === OTHER || listOf(id).includes(OTHER);
+    const hasOther = (id) => { const o = otherOf(S.byId[id]); return !!o && (st.answers[id] === o || listOf(id).includes(o)); };
     const answers = Object.fromEntries(Object.entries(st.answers).filter(([k]) => on.has(k.match(/^q\d+/)[0])
       && (!k.endsWith('_other') || hasOther(k.slice(0, -6)))));
     return JSON.stringify({ id: st.id, seq: st.seq, answers, path: st.path, last_q: st.path[st.path.length - 1] || null, done: !!done, source: st.source });
@@ -121,7 +124,7 @@
 
     const body = $('#sv-body');
     body.innerHTML = '';
-    const opts = q.options ? [...q.options, ...(q.other ? [OTHER] : [])] : [];
+    const opts = q.options ? allOpts(q) : [];
 
     body.className = q.pics ? 'sv-body sv-body--pics' : 'sv-body';
     if (q.type === 'one') {
@@ -131,7 +134,7 @@
         b.addEventListener('click', () => pickOne(q, o));
         body.append(b);
       });
-      if (q.other && st.answers[q.id] === OTHER) body.append(otherBox(q));
+      if (otherOf(q) && st.answers[q.id] === otherOf(q)) body.append(otherBox(q));
     } else if (q.type === 'many') {
       body.setAttribute('role', 'group');
       const list = listOf(q.id);
@@ -142,7 +145,7 @@
         b.addEventListener('click', () => toggle(q, o));
         body.append(b);
       });
-      if (q.other && list.includes(OTHER)) body.append(otherBox(q));
+      if (otherOf(q) && list.includes(otherOf(q))) body.append(otherBox(q));
     } else if (q.type === 'grid') {
       body.removeAttribute('role');
       for (const [key, label] of q.rows) {
@@ -248,7 +251,7 @@
   function pickOne(q, o) {
     st.answers[q.id] = o;
     persist(); save();
-    if (o === OTHER) { render(); $('.sv-other')?.focus(); return; }
+    if (o === otherOf(q)) { render(); $('.sv-other')?.focus(); return; }
     for (const b of document.querySelectorAll('#sv-body .sv-opt')) b.setAttribute('aria-checked', b.dataset.value === o ? 'true' : 'false');
     $('.sv-other')?.remove();
     advanceTimer = setTimeout(advance, 260); // single choice moves on by itself
@@ -270,18 +273,18 @@
     st.answers[q.id] = list;
     persist(); save();
     render();
-    if (o === OTHER && list.includes(OTHER)) $('.sv-other')?.focus();
+    if (o === otherOf(q) && list.includes(o)) $('.sv-other')?.focus();
   }
 
   function problem(q) {
     const a = st.answers[q.id];
     if (q.type === 'one') {
       if (!a) return 'Please choose an answer.';
-      if (a === OTHER && !(st.answers[`${q.id}_other`] || '').trim()) return 'Please say what "Other" is.';
+      if (a === otherOf(q) && !(st.answers[`${q.id}_other`] || '').trim()) return 'Please type your answer in the box.';
     } else if (q.type === 'many') {
       const list = listOf(q.id);
       if (!list.length && !q.optional) return 'Please tick at least one.';
-      if (list.includes(OTHER) && !(st.answers[`${q.id}_other`] || '').trim()) return 'Please say what "Other" is.';
+      if (otherOf(q) && list.includes(otherOf(q)) && !(st.answers[`${q.id}_other`] || '').trim()) return 'Please type your answer in the box.';
     } else if (q.type === 'grid') {
       if (!q.rows.every(([k]) => st.answers[k])) return 'Please answer both rows.';
     } else if (q.type === 'email') {
@@ -336,7 +339,7 @@
     const q = cur();
     const n = Number(e.key);
     if (q.type === 'one' && n >= 1 && n <= 9) {
-      const o = [...q.options, ...(q.other ? [OTHER] : [])][n - 1];
+      const o = allOpts(q)[n - 1];
       if (o) pickOne(q, o);
     }
   });
