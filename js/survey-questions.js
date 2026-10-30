@@ -8,6 +8,7 @@
 //   go: where each answer leads (by option), else the next question in the list
 //   optional: can be skipped
 //   pics: {option: [picture, one-line hint]} shows options as picture cards (assets/img/axle-*.svg)
+//   redirect: {answer: {set, to, message}} = that answer changes earlier answers and jumps to another question
 //   suggest: 'countries' | 'uk_places' = type-ahead from js/countries.js / js/uk-places.js, saved as the standard name
 window.AXO_SURVEY = (() => {
   const SECTIONS = {
@@ -40,7 +41,10 @@ window.AXO_SURVEY = (() => {
     { id: 'q6', section: 'uk', type: 'one', title: 'How many bikes do you have in the UK?', options: BIKES,
       go: { 0: 'q9', '*': 'q11' } },
 
-    { id: 'q7', section: 'abroad', type: 'text', suggest: 'countries', title: 'Which country do you live in?' },
+    { id: 'q7', section: 'abroad', type: 'text', suggest: 'countries', title: 'Which country do you live in?',
+      // said "not in the UK" but then picked the UK: correct q4 and send them to the UK questions
+      redirect: { 'United Kingdom': { set: { q4: 'Yes' }, to: 'q5',
+        message: "You picked the United Kingdom, so we've switched you to the questions for people living in the UK." } } },
     { id: 'q8', section: 'abroad', type: 'one', title: 'How many bikes do you have where you live?', options: BIKES,
       go: { 0: 'q10', '*': 'q11' } },
 

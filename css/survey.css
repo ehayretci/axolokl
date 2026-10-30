@@ -39,6 +39,10 @@
 }
 
 /* Question */
+.sv-flag {
+  margin: 0 0 1rem; padding: 0.75rem 1rem; border-radius: 12px; font-size: var(--step--1); font-weight: 600;
+  color: var(--graphite); background: rgb(244 169 192 / .3); border: 1px solid rgb(184 53 94 / .35);
+}
 .sv-section { margin: 0; font-size: var(--step--1); font-weight: 700; color: var(--gill); }
 .sv-section-note { margin: 0.25rem 0 0; font-size: var(--step--1); color: var(--steel); }
 .sv-title {

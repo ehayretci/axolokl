@@ -26,6 +26,7 @@
   let st = load();
   if (!st || !st.id) st = fresh();
   let advanceTimer = null, typeTimer = null, retryTimer = null;
+  let flag = null; // one-off notice shown on the next screen (after a redirect)
 
   // ---------- saving ----------
   // only the answers on the path actually taken (going back and changing a branch drops the old branch)
@@ -117,6 +118,7 @@
     $('#sv-section').textContent = sec ? sec.title : 'About you';
     const secNote = typeof sec?.note === 'function' ? sec.note(st.path) : sec?.note;
     $('#sv-section-note').hidden = !secNote; $('#sv-section-note').textContent = secNote || '';
+    $('#sv-flag').hidden = !flag; $('#sv-flag').textContent = flag || ''; flag = null;
     $('#sv-title').textContent = q.title;
     $('#sv-note').hidden = !q.note; $('#sv-note').textContent = q.note || '';
     const hint = q.type === 'many' ? (q.max ? `Pick up to ${q.max === 3 ? 'three' : q.max}.` : 'Tick all that apply.')
@@ -233,7 +235,10 @@
       input.setAttribute('aria-expanded', items.length ? 'true' : 'false');
       if (hi >= 0) input.setAttribute('aria-activedescendant', `sv-sug-${hi}`); else input.removeAttribute('aria-activedescendant');
     };
-    const choose = (n) => { input.value = n; st.answers[q.id] = n; persist(); save(); nextLabel(); hi = -1; draw(); };
+    const choose = (n) => {
+      input.value = n; st.answers[q.id] = n; persist(); save(); nextLabel(); hi = -1; draw();
+      if (q.redirect?.[n]) advance(); // e.g. picked the UK on the 'outside the UK' branch
+    };
     input.addEventListener('input', () => { hi = -1; draw(); });
     input.addEventListener('keydown', (e) => {
       if (!items.length) return;
@@ -302,6 +307,14 @@
     if (q.suggest) { const c = standardName(q.suggest, st.answers[q.id] || ''); if (c) st.answers[q.id] = c; } // "usa" -> United States, "hackney" -> London
     const err = problem(q);
     if (err) { $('#sv-error').textContent = err; $('#sv-error').hidden = false; return; }
+    const jump = q.redirect?.[st.answers[q.id]];
+    if (jump) {
+      Object.assign(st.answers, jump.set || {});
+      delete st.answers[q.id];
+      st.path.pop(); st.path.push(jump.to);
+      flag = jump.message;
+      persist(); save(); render(); return;
+    }
     const to = S.next(q, st.answers);
     if (to) { st.path.push(to); persist(); save(); render(); return; }
     await finish();
