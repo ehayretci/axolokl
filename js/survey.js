@@ -11,6 +11,8 @@
   const otherOf = (q) => (q?.other === true ? OTHER : q?.other || null);
   const allOpts = (q) => [...q.options, ...(q.other === true ? [OTHER] : [])];
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  // phones: a slightly longer pause after a tap so people see their pick before the next question
+  const TOUCH = matchMedia('(hover: none), (pointer: coarse)').matches;
 
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY)); } catch { return null; } };
   const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch { /* private mode: still works, just no resume */ } };
@@ -254,7 +256,7 @@
     if (o === otherOf(q)) { render(); $('.sv-other')?.focus(); return; }
     for (const b of document.querySelectorAll('#sv-body .sv-opt')) b.setAttribute('aria-checked', b.dataset.value === o ? 'true' : 'false');
     $('.sv-other')?.remove();
-    advanceTimer = setTimeout(advance, 260); // single choice moves on by itself
+    advanceTimer = setTimeout(advance, TOUCH ? 420 : 260); // single choice moves on by itself
   }
   function pickGrid(q, key, o) {
     st.answers[key] = o;
@@ -262,7 +264,7 @@
     for (const row of document.querySelectorAll('.sv-row'))
       if (row.querySelector('.sv-row__label').textContent === q.rows.find(([k]) => k === key)[1])
         for (const b of row.querySelectorAll('.sv-opt')) b.setAttribute('aria-checked', b.dataset.value === o ? 'true' : 'false');
-    if (q.rows.every(([k]) => st.answers[k])) advanceTimer = setTimeout(advance, 320);
+    if (q.rows.every(([k]) => st.answers[k])) advanceTimer = setTimeout(advance, TOUCH ? 480 : 320);
   }
   function toggle(q, o) {
     let list = listOf(q.id);
