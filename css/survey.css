@@ -31,7 +31,12 @@
 .sv .btn { border: 0; cursor: pointer; }
 .sv .btn:disabled { opacity: .45; cursor: default; }
 .sv .btn:disabled:hover { background: var(--graphite); }
-.sv-again { margin-top: 2rem; }
+.sv-again { margin-top: 2rem; font-size: var(--step--1); color: var(--steel); }
+/* text links that are buttons: underlined in the accent colour so they look clickable */
+.sv-link {
+  font: inherit; font-weight: 600; color: var(--gill); background: none; border: 0; padding: 0; cursor: pointer;
+  text-decoration: underline; text-underline-offset: 0.2em; text-decoration-thickness: 1.5px;
+}
 
 /* Question */
 .sv-section { margin: 0; font-size: var(--step--1); font-weight: 700; color: var(--gill); }
@@ -124,6 +129,7 @@ textarea.sv-input { min-height: 9rem; resize: vertical; line-height: 1.45; }
   .sv-opt:disabled:hover { border-color: var(--hairline); }
   .sv-suggest__opt:hover { border-color: var(--graphite); background: var(--alu); }
   .sv-back:hover { color: var(--gill); }
+  .sv-link:hover { color: var(--graphite); }
 }
 @media (hover: none), (pointer: coarse) {
   .sv .btn:hover { background: var(--graphite); }   /* same for the Next button's pink hover */

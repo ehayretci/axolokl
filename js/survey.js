@@ -71,7 +71,7 @@
     const r = $('#sv-resume');
     r.hidden = !started;
     if (started) {
-      r.innerHTML = `You've started this survey already. <strong>Start</strong> carries on where you left off, or <button class="sv-back" type="button" id="sv-over">start over</button>.`;
+      r.innerHTML = `You've started this survey already. <strong>Start</strong> carries on where you left off, or <button class="sv-link" type="button" id="sv-over">start over</button>.`;
       $('#sv-over').addEventListener('click', restart);
     }
     show('sv-intro'); progress();
