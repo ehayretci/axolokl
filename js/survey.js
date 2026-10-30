@@ -164,11 +164,66 @@
       input.value = st.answers[q.id] || '';
       input.addEventListener('input', () => { st.answers[q.id] = input.value; typed(); nextLabel(); });
       body.append(input);
+      if (q.suggest === 'countries' && window.AXO_COUNTRIES) suggestCountries(q, input, body);
     }
     nextLabel();
     show('sv-q'); progress();
     const text = $('#sv-text');
     if (text && matchMedia('(hover: hover)').matches) text.focus(); else $('#sv-title').focus({ preventScroll: true });
+  }
+
+  // ---------- country type-ahead ----------
+  const fold = (s) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+  function countryOf(text) { // exact name or alias -> the standard name
+    const t = fold(text), C = window.AXO_COUNTRIES;
+    if (!t || !C) return null;
+    return C.NAMES.find((n) => fold(n) === t) || Object.entries(C.ALIASES).find(([a]) => fold(a) === t)?.[1] || null;
+  }
+  function countryMatches(text) {
+    const t = fold(text), C = window.AXO_COUNTRIES, out = [];
+    if (!t) return out;
+    const add = (n) => { if (!out.includes(n)) out.push(n); };
+    for (const [a, n] of Object.entries(C.ALIASES)) if (fold(a) === t) add(n);
+    for (const n of C.NAMES) if (fold(n).startsWith(t)) add(n);
+    for (const n of C.NAMES) if (fold(n).split(/[\s-]+/).some((w) => w.startsWith(t))) add(n);
+    if (t.length >= 2) for (const [a, n] of Object.entries(C.ALIASES)) if (fold(a).startsWith(t)) add(n);
+    if (t.length >= 3) for (const n of C.NAMES) if (fold(n).includes(t)) add(n);
+    return out.slice(0, 6);
+  }
+  function suggestCountries(q, input, body) {
+    input.autocomplete = 'off'; input.placeholder = 'Start typing a country';
+    input.setAttribute('role', 'combobox'); input.setAttribute('aria-autocomplete', 'list');
+    input.setAttribute('aria-controls', 'sv-suggest'); input.setAttribute('aria-expanded', 'false');
+    const list = document.createElement('div');
+    list.id = 'sv-suggest'; list.className = 'sv-suggest'; list.setAttribute('role', 'listbox');
+    body.append(list);
+    let items = [], hi = -1;
+    const draw = () => {
+      items = countryOf(input.value) === input.value ? [] : countryMatches(input.value);
+      if (hi >= items.length) hi = -1;
+      list.innerHTML = '';
+      items.forEach((n, i) => {
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'sv-opt sv-suggest__opt'; b.id = `sv-sug-${i}`;
+        b.setAttribute('role', 'option'); b.setAttribute('aria-selected', i === hi ? 'true' : 'false');
+        b.textContent = n;
+        b.addEventListener('mousedown', (e) => e.preventDefault()); // keep the keyboard open on phones
+        b.addEventListener('click', () => choose(n));
+        list.append(b);
+      });
+      input.setAttribute('aria-expanded', items.length ? 'true' : 'false');
+      if (hi >= 0) input.setAttribute('aria-activedescendant', `sv-sug-${hi}`); else input.removeAttribute('aria-activedescendant');
+    };
+    const choose = (n) => { input.value = n; st.answers[q.id] = n; persist(); save(); nextLabel(); hi = -1; draw(); };
+    input.addEventListener('input', () => { hi = -1; draw(); });
+    input.addEventListener('keydown', (e) => {
+      if (!items.length) return;
+      if (e.key === 'ArrowDown') { e.preventDefault(); hi = (hi + 1) % items.length; draw(); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); hi = hi <= 0 ? items.length - 1 : hi - 1; draw(); }
+      else if (e.key === 'Enter') { e.preventDefault(); choose(items[hi >= 0 ? hi : 0]); }
+      else if (e.key === 'Escape') { items = []; list.innerHTML = ''; input.setAttribute('aria-expanded', 'false'); }
+    });
+    draw();
   }
 
   function nextLabel() {
@@ -225,6 +280,7 @@
   async function advance() {
     clearTimeout(advanceTimer);
     const q = cur();
+    if (q.suggest === 'countries') { const c = countryOf(st.answers[q.id] || ''); if (c) st.answers[q.id] = c; } // "usa" -> United States
     const err = problem(q);
     if (err) { $('#sv-error').textContent = err; $('#sv-error').hidden = false; return; }
     const to = S.next(q, st.answers);

@@ -7,6 +7,7 @@
 //   none: an option that clears the others when ticked ("None of these")
 //   go: where each answer leads (by option), else the next question in the list
 //   optional: can be skipped
+//   suggest: 'countries' = type-ahead from js/countries.js, saved as the standard country name
 window.AXO_SURVEY = (() => {
   const SECTIONS = {
     uk: { title: 'Living in the UK' },
@@ -36,7 +37,7 @@ window.AXO_SURVEY = (() => {
     { id: 'q6', section: 'uk', type: 'one', title: 'How many bikes do you have in the UK?', options: BIKES,
       go: { 0: 'q9', '*': 'q11' } },
 
-    { id: 'q7', section: 'abroad', type: 'text', title: 'Which country do you live in?' },
+    { id: 'q7', section: 'abroad', type: 'text', suggest: 'countries', title: 'Which country do you live in?' },
     { id: 'q8', section: 'abroad', type: 'one', title: 'How many bikes do you have where you live?', options: BIKES,
       go: { 0: 'q10', '*': 'q11' } },
 

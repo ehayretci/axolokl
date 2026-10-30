@@ -77,6 +77,11 @@
 .sv-input:focus { outline: none; border-color: var(--graphite); }
 textarea.sv-input { min-height: 9rem; resize: vertical; line-height: 1.45; }
 .sv-other { margin-top: 0.1rem; }
+.sv-suggest { display: grid; gap: 0.25rem; margin-top: -0.15rem; }
+.sv-suggest:empty { display: none; }
+.sv-suggest__opt { padding: 0.55rem 1rem; border-color: transparent; background: rgb(28 31 35 / .05); }
+.sv-suggest__opt::before { content: "↳"; color: var(--steel); margin-right: -0.2rem; }
+.sv-suggest__opt:hover, .sv-suggest__opt[aria-selected="true"] { border-color: var(--graphite); background: var(--alu); }
 
 /* Grid question: one block of options per row */
 .sv-row + .sv-row { margin-top: 1.25rem; }
