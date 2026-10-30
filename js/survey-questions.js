@@ -7,6 +7,7 @@
 //   none: an option that clears the others when ticked ("None of these")
 //   go: where each answer leads (by option), else the next question in the list
 //   optional: can be skipped
+//   pics: {option: [sketch, one-line hint]} shows options as picture cards (sketches in assets/img/axle-*.svg)
 //   suggest: 'countries' = type-ahead from js/countries.js, saved as the standard country name
 window.AXO_SURVEY = (() => {
   const SECTIONS = {
@@ -56,7 +57,13 @@ window.AXO_SURVEY = (() => {
     { id: 'q14', section: 'bike', type: 'one', title: 'Roughly how much would a bike like yours cost to buy new today?',
       options: ['Under £100', '£100 to £199', '£200 to £499', '£500 to £999', '£1,000 or more', 'Not sure'] },
     { id: 'q15', section: 'bike', type: 'one', title: 'How are your bike wheels held on?',
-      options: ['Quick release', 'Thru axle', 'Bolt-on', 'Locking axle', 'Not sure'] },
+      options: ['Quick release', 'Thru axle', 'Bolt-on', 'Locking axle', 'Not sure'],
+      pics: {
+        'Quick release': ['assets/img/axle-quick-release.svg', 'A lever you flip open, no tools'],
+        'Thru axle': ['assets/img/axle-thru-axle.svg', 'A thick axle, with a lever or a bolt'],
+        'Bolt-on': ['assets/img/axle-bolt-on.svg', 'Nuts on each side, needs a spanner'],
+        'Locking axle': ['assets/img/axle-locking-axle.svg', 'Needs its own special key'],
+      } },
     { id: 'q16', section: 'bike', type: 'many', title: "When you're out, where do you leave your bike?", other: true,
       options: ['On the street (stand, railing or post)', 'Secure parking (locked room, cage or cycle hub)', 'A train station bike park', 'I keep it with me'] },
     { id: 'q17', section: 'bike', type: 'one', title: "On a typical day, what's the longest you leave it in one place?",

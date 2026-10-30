@@ -81,12 +81,17 @@
   const cur = () => S.byId[st.path[st.path.length - 1]];
   const listOf = (id) => (Array.isArray(st.answers[id]) ? st.answers[id] : []);
 
-  function optButton(label, role, checked, i) {
+  function optButton(label, role, checked, i, pic) {
     const b = document.createElement('button');
-    b.type = 'button'; b.className = 'sv-opt'; b.setAttribute('role', role);
+    b.type = 'button'; b.className = pic ? 'sv-opt sv-opt--pic' : 'sv-opt'; b.setAttribute('role', role);
     b.setAttribute('aria-checked', checked ? 'true' : 'false');
-    b.innerHTML = `<span class="sv-mark" aria-hidden="true"></span><span class="sv-opt__label"></span>${i != null && i < 9 ? `<span class="sv-key" aria-hidden="true">${i + 1}</span>` : ''}`;
+    const key = i != null && i < 9 ? `<span class="sv-key" aria-hidden="true">${i + 1}</span>` : '';
+    b.innerHTML = pic
+      ? `<span class="sv-opt__img"><img src="${pic[0]}" alt="" width="240" height="200" loading="lazy"></span>
+         <span class="sv-opt__row"><span class="sv-mark" aria-hidden="true"></span><span><span class="sv-opt__label"></span><span class="sv-opt__hint"></span></span>${key}</span>`
+      : `<span class="sv-mark" aria-hidden="true"></span><span class="sv-opt__label"></span>${key}`;
     b.querySelector('.sv-opt__label').textContent = label;
+    if (pic) b.querySelector('.sv-opt__hint').textContent = pic[1];
     b.dataset.value = label;
     return b;
   }
@@ -118,10 +123,11 @@
     body.innerHTML = '';
     const opts = q.options ? [...q.options, ...(q.other ? [OTHER] : [])] : [];
 
+    body.className = q.pics ? 'sv-body sv-body--pics' : 'sv-body';
     if (q.type === 'one') {
       body.setAttribute('role', 'radiogroup');
       opts.forEach((o, i) => {
-        const b = optButton(o, 'radio', st.answers[q.id] === o, i);
+        const b = optButton(o, 'radio', st.answers[q.id] === o, i, q.pics?.[o]);
         b.addEventListener('click', () => pickOne(q, o));
         body.append(b);
       });

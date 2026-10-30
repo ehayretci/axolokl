@@ -83,6 +83,18 @@ textarea.sv-input { min-height: 9rem; resize: vertical; line-height: 1.45; }
 .sv-suggest__opt::before { content: "↳"; color: var(--steel); margin-right: -0.2rem; }
 .sv-suggest__opt:hover, .sv-suggest__opt[aria-selected="true"] { border-color: var(--graphite); background: var(--alu); }
 
+/* Picture cards (axle types): sketches like the problem graphics on the home page */
+.sv-body--pics { grid-template-columns: 1fr 1fr; }
+.sv-body--pics > .sv-opt:not(.sv-opt--pic) { grid-column: 1 / -1; }
+.sv-opt--pic { gap: 0.4rem; padding: 0.45rem 0.6rem 0.45rem 0.45rem; }   /* desktop: picture beside the text */
+.sv-opt__img { display: block; flex: 0 0 46%; background: #fff; border-radius: 9px; }
+.sv-opt__img img { width: 100%; height: auto; aspect-ratio: 6 / 5; }
+.sv-opt__row { display: flex; flex: 1; align-items: flex-start; gap: 0.55rem; padding: 0 0.35rem; }
+.sv-opt__row .sv-mark { margin-top: 0.15rem; }
+.sv-opt__hint { display: block; margin-top: 0.15rem; font-size: 0.8rem; line-height: 1.3; color: var(--steel); }
+.sv-opt--pic .sv-key { display: none; }
+.sv-opt--pic .sv-opt__label { display: block; line-height: 1.25; }
+
 /* Grid question: one block of options per row */
 .sv-row + .sv-row { margin-top: 1.25rem; }
 .sv-row__label { margin: 0 0 0.5rem; font-weight: 700; }
@@ -103,6 +115,7 @@ textarea.sv-input { min-height: 9rem; resize: vertical; line-height: 1.45; }
   .sv { padding-top: 1.5rem; }
   .sv-logo .logo__word { display: none; }
   .sv-key { display: none; }
+  .sv-opt--pic { flex-direction: column; align-items: stretch; gap: 0.5rem; padding: 0.45rem 0.45rem 0.75rem; }
   .sv-row__opts { grid-template-columns: 1fr; }
   .sv-row__opts .sv-opt { justify-content: flex-start; text-align: left; font-size: var(--step-0); padding: 0.75rem 1rem; }
 }
