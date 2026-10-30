@@ -11,8 +11,6 @@
   const otherOf = (q) => (q?.other === true ? OTHER : q?.other || null);
   const allOpts = (q) => [...q.options, ...(q.other === true ? [OTHER] : [])];
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  // phones: a slightly longer pause after a tap so people see their pick before the next question
-  const TOUCH = matchMedia('(hover: none), (pointer: coarse)').matches;
 
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY)); } catch { return null; } };
   const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch { /* private mode: still works, just no resume */ } };
@@ -25,7 +23,7 @@
 
   let st = load();
   if (!st || !st.id) st = fresh();
-  let advanceTimer = null, typeTimer = null, retryTimer = null;
+  let typeTimer = null, retryTimer = null;
   let flag = null; // one-off notice shown on the next screen (after a redirect)
 
   // ---------- saving ----------
@@ -112,7 +110,6 @@
   function typed() { persist(); clearTimeout(typeTimer); typeTimer = setTimeout(save, 700); }
 
   function render() {
-    clearTimeout(advanceTimer);
     const q = cur();
     const sec = q.section ? S.SECTIONS[q.section] : null;
     $('#sv-section').textContent = sec ? sec.title : 'About you';
@@ -237,7 +234,6 @@
     };
     const choose = (n) => {
       input.value = n; st.answers[q.id] = n; persist(); save(); nextLabel(); hi = -1; draw();
-      if (q.redirect?.[n]) advance(); // e.g. picked the UK on the 'outside the UK' branch
     };
     input.addEventListener('input', () => { hi = -1; draw(); });
     input.addEventListener('keydown', (e) => {
@@ -262,7 +258,7 @@
     if (o === otherOf(q)) { render(); $('.sv-other')?.focus(); return; }
     for (const b of document.querySelectorAll('#sv-body .sv-opt')) b.setAttribute('aria-checked', b.dataset.value === o ? 'true' : 'false');
     $('.sv-other')?.remove();
-    advanceTimer = setTimeout(advance, TOUCH ? 420 : 260); // single choice moves on by itself
+    $('#sv-error').hidden = true; // people move on with Next
   }
   function pickGrid(q, key, o) {
     st.answers[key] = o;
@@ -270,7 +266,7 @@
     for (const row of document.querySelectorAll('.sv-row'))
       if (row.querySelector('.sv-row__label').textContent === q.rows.find(([k]) => k === key)[1])
         for (const b of row.querySelectorAll('.sv-opt')) b.setAttribute('aria-checked', b.dataset.value === o ? 'true' : 'false');
-    if (q.rows.every(([k]) => st.answers[k])) advanceTimer = setTimeout(advance, TOUCH ? 480 : 320);
+    $('#sv-error').hidden = true;
   }
   function toggle(q, o) {
     let list = listOf(q.id);
@@ -302,7 +298,6 @@
   }
 
   async function advance() {
-    clearTimeout(advanceTimer);
     const q = cur();
     if (q.suggest) { const c = standardName(q.suggest, st.answers[q.id] || ''); if (c) st.answers[q.id] = c; } // "usa" -> United States, "hackney" -> London
     const err = problem(q);
@@ -349,10 +344,11 @@
   $('#sv-form').addEventListener('submit', (e) => { e.preventDefault(); advance(); });
   $('#sv-back').addEventListener('click', () => { if (st.path.length > 1) { st.path.pop(); persist(); render(); } });
   $('#sv-again').addEventListener('click', restart);
-  // keys 1-9 pick an option on single-choice questions (desktop)
+  // keys 1-9 pick an option on single-choice questions, Enter goes on (desktop)
   addEventListener('keydown', (e) => {
     if ($('#sv-q').hidden || e.metaKey || e.ctrlKey || e.altKey || /INPUT|TEXTAREA/.test(document.activeElement?.tagName)) return;
     const q = cur();
+    if (e.key === 'Enter' && document.activeElement?.closest('#sv-body')) { e.preventDefault(); advance(); return; } // Enter on a picked option = Next
     const n = Number(e.key);
     if (q.type === 'one' && n >= 1 && n <= 9) {
       const o = allOpts(q)[n - 1];
